@@ -250,11 +250,11 @@ function initStatChanges(focus) {
   if (player.happiness <= 0) {
     console.log("You lose please quit.");
     lostPage();
-  }
-
-  document.removeEventListener('keydown', handleChooseFocus);
-  document.addEventListener('keydown', nextWeek);
-
+  } else {
+    document.removeEventListener('keydown', handleChooseFocus);
+    document.addEventListener('keydown', nextWeek);
+}
+  
 }
 
 function updateHappiness() {
@@ -449,13 +449,24 @@ function updateTextInBox(stringToShow) {
 }
 
 function youLost(stringToShow) {
-  document.removeEventListener('keydown', nextWeek);
-  console.log("got here");
   hud();
-  var text1 = new createjs.Text(stringToShow, '30px VT323', white);
-  text1.x = 385 - text1.getMeasuredWidth()/2;
-  text1.y = 388 + 50;
-  stage.addChild(text1);
+  if(stringToShow.length > 50) {
+    var text1 = new createjs.Text(stringToShow.slice(0, 50), '30px VT323', white);
+    text1.x = 385 - text1.getMeasuredWidth()/2;
+    text1.y = 388 + 55;
+    var text2 = new createjs.Text(stringToShow.slice(50), '30px VT323', white);
+    text2.x = 385 - text2.getMeasuredWidth()/2;
+    text2.y = 388 + 95;
+    stage.addChild(text1, text2);
+  } else {
+    var text1 = new createjs.Text(stringToShow, '30px VT323', white);
+    text1.x = 385 - text1.getMeasuredWidth()/2;
+    text1.y = 388 + 50;
+    stage.addChild(text1);
+  }
+  document.removeEventListener('keydown', nextWeek);
+  document.removeEventListener('keydown', handleChooseFocus);
+  
 
   const next = new createjs.Text("Restart (a)", "25px VT323", white);
   next.x = 385 - next.getMeasuredWidth()/2;
