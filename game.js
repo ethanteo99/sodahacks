@@ -1,8 +1,14 @@
 var canvas;
 var stage;
-var width = 1000;
-var height = 600;
-var font = '30px VT323'
+const width = 1000;
+const height = 600;
+const font = '30px VT323'
+
+var intelligence;
+var social;
+var energy;
+var GPA;
+var health;
 
 //Create a stage by getting a reference to the canvas
 function init(){
@@ -34,6 +40,9 @@ function createMenu() {
     instructions.x = canvas.width()/2 - instructions.getMeasuredWidth()/2;
     instructions.y = 250;
 
+    instructions.addEventListener("mouseover", showInstructions);
+    stage.enableMouseOver(20);
+
     menu.addChild(welcome, start, instructions);
     stage.addChild(menu);
     stage.update();
@@ -50,4 +59,17 @@ function handleKey(event) {
     } else if (event.keyCode == 73) {
         console.log('show instructions');
     }
+}
+
+function choosePlayer(event) {
+}
+
+function showInstructions(event) {
+    console.log("works");
+    var show = new createjs.Text('Instructions');
+    show.x = 200;
+    show.y = 300;
+
+    stage.addChild(show);
+    stage.update();
 }
