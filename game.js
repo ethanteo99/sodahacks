@@ -100,6 +100,8 @@ function createMenu() {
 }
 
 
+
+
 function handleStartMenuKey(event) {
     if (event.keyCode == 83) {
         document.removeEventListener('keydown', handleStartMenuKey);
@@ -178,10 +180,34 @@ function handleChoosePlayerMenuKey(event) {
 
 function proceedWithPlayer(event) {
     if (event.keyCode == 89) {
+        bideo();
         initPlayer(playerNum);
     } else if (event.keyCode == 78) {
         handleChoosePlayerMenuKey();
     }
+}
+
+function bideo(){
+    $("#sather").fadeIn();
+    $("#black").show();
+    setTimeout(function(){ $("#sather").fadeOut();
+      $("#football").fadeIn();
+    }, 1500);
+
+    setTimeout(function(){ $("#football").fadeOut();
+      $("#soda").fadeIn();
+    }, 3000);
+
+    setTimeout(function(){ $("#football").fadeOut();
+      $("#black").css("z-index", "-2");
+      $("#soda").fadeOut();
+
+    }, 4500);
+      
+    
+    
+
+
 }
 
 function initPlayer(playerNum) {
@@ -240,6 +266,9 @@ function minusRandomScalar() {
 function initStatChanges(focus) {
   var scalar = Math.floor(Math.random() * 6 + 1);
   if (focus == 1) {
+    $("#bed").fadeIn();
+    $("#moffit").fadeOut();
+    $("#party").fadeOut();
 
     if (scalar == 1 || scalar == 2) {
       updateTextInBox("Despite trying your best, you had a rough week of sleep: +" + scalar + " sleep");
@@ -255,6 +284,10 @@ function initStatChanges(focus) {
 
   if (focus == 2) {
 
+    $("#moffit").fadeIn();
+    $("#party").fadeOut();
+    $("#bed").fadeOut();
+
     if (scalar == 1 || scalar == 2) {
       updateTextInBox("Even after studying, the concepts are still fuzzy in your brain: +" + scalar + " intelligence");
     } else {
@@ -267,6 +300,10 @@ function initStatChanges(focus) {
   }
 
   if (focus == 3) {
+
+    $("#moffit").fadeOut();
+    $("#party").fadeIn();
+    $("#bed").fadeOut();
     if (scalar == 1 || scalar == 2) {
       updateTextInBox("Your friends are busy this week, but they manage to squeeze in a little time for you +" + scalar + " social");
     }
@@ -384,8 +421,7 @@ function restartGame(event) {
 
 function hud(){
     stage.removeAllChildren();
-    var background = new createjs.Shape();
-    background.graphics.beginFill("#4C5B5C").drawRect(0,0,1000,600);
+
 
     var rec1 = new createjs.Shape();
     rec1.graphics.setStrokeStyle(8, "round");
@@ -450,7 +486,6 @@ function hud(){
     cha.y = 50;
     cha.scale = .5;
 
-    stage.addChild(background);
     stage.addChild(rec1, rec2, rec3);
     stage.addChild(date);
     stage.addChild(gpatext, haptext, atrtext, inttext, soctext, sletext, nametext);
