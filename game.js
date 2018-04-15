@@ -1,22 +1,25 @@
 var canvas;
 var stage;
-var circle;
-
 var textColor = "#000000";
 var buttonColor = "#0033cc";
-var textFont = "30px VT323";
-var width = 1000;
-var height = 600;
-var font = '30px VT323';
+const width = 1000;
+const height = 600;
+const font = '30px VT323'
 
-function init(){
+var intelligence;
+var social;
+var energy;
+var GPA;
+var happiness;
+
+function init() {
   canvas = document.getElementById("demoCanvas");
   stage = new createjs.Stage(canvas);
 
   stage.update();
   createMenu();
 }
- 
+
 function handleClick(event) {
   console.log("clicked!");
 }
@@ -34,7 +37,7 @@ function choosePlayer() {
   var player1 = new createjs.Text("Player 1 (a)", "50px VT323", textColor);
   player1.x = canvas.width / 2 - player1.getMeasuredWidth() / 2;
   player1.y = (canvas.height / 15) * 8;
-  
+
   var player2 = new createjs.Text("Player 2 (b)", "50px VT323", textColor);
   player2.x = canvas.width / 2 - player2.getMeasuredWidth() / 2;
   player2.y = (canvas.height / 15) * 10;
@@ -69,6 +72,9 @@ function createMenu() {
     instructions.x = canvas.width/2 - instructions.getMeasuredWidth()/2;
     instructions.y = 250;
 
+    instructions.addEventListener("mouseover", showInstructions);
+    stage.enableMouseOver(20);
+
     menu.addChild(welcome, start, instructions);
     stage.addChild(menu);
     stage.update();
@@ -82,6 +88,17 @@ function handleStartMenuKey(event) {
     } else if (event.keyCode == 73) {
         console.log('show instructions');
     }
+}
+
+
+function showInstructions(event) {
+    console.log("works");
+    var show = new createjs.Text('Instructions');
+    show.x = 200;
+    show.y = 300;
+
+    stage.addChild(show);
+    stage.update();
 }
 
 function handleChoosePlayerMenuKey(event) {
