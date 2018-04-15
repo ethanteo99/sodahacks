@@ -46,15 +46,15 @@ function choosePlayer() {
   title.x = canvas.width / 2 - title.getMeasuredWidth() / 2;
   title.y = canvas.height / 15 * 4;
 
-  var player1 = new createjs.Text("Player 1 (a)", "50px VT323", textColor);
+  var player1 = new createjs.Text("Chad (a)", "50px VT323", textColor);
   player1.x = canvas.width / 2 - player1.getMeasuredWidth() / 2;
   player1.y = (canvas.height / 15) * 8;
 
-  var player2 = new createjs.Text("Player 2 (b)", "50px VT323", textColor);
+  var player2 = new createjs.Text("EECS (b)", "50px VT323", textColor);
   player2.x = canvas.width / 2 - player2.getMeasuredWidth() / 2;
   player2.y = (canvas.height / 15) * 10;
 
-  var player3 = new createjs.Text("Player 3 (c)", "50px VT323", textColor);
+  var player3 = new createjs.Text("Media Studies (c)", "50px VT323", textColor);
   player3.x = canvas.width / 2 - player3.getMeasuredWidth() / 2;
   player3.y = (canvas.height / 15) * 12;
 
@@ -159,17 +159,17 @@ function proceedWithPlayer(event) {
 function initPlayer(playerNum) {
   console.log("initializing player");
   if(playerNum == 1) {
-    player.name = "chad";
+    player.name = "Chad";
     player.intelligence = 55;
     player.social = 80;
     player.sleep = 65;
   } else if(playerNum == 2) {
-    player.name = "eecs";
+    player.name = "EECS";
     player.intelligence = 80;
     player.social = 60;
     player.sleep = 60;
   } else if(playerNum == 3) {
-    player.name = "media studies";
+    player.name = "Media Studies";
     player.intelligence = 60;
     player.social = 70;
     player.sleep = 70;
