@@ -2,6 +2,7 @@ var canvas;
 var stage;
 var textColor = "#000000";
 var buttonColor = "#0033cc";
+var playerNum = 0;
 const width = 1000;
 const height = 600;
 const font = '30px VT323';
@@ -40,7 +41,7 @@ function choosePlayer() {
 
   var title = new createjs.Text("Choose Player", "70px VT323", textColor);
   title.x = canvas.width / 2 - title.getMeasuredWidth() / 2;
-  title.y = title.y = (canvas.height / 15) * 4;
+  title.y = canvas.height / 15 * 4;
 
   var player1 = new createjs.Text("Player 1 (a)", "50px VT323", textColor);
   player1.x = canvas.width / 2 - player1.getMeasuredWidth() / 2;
@@ -80,9 +81,6 @@ function createMenu() {
     instructions.x = canvas.width/2 - instructions.getMeasuredWidth()/2;
     instructions.y = 250;
 
-    instructions.addEventListener("mouseover", showInstructions);
-    stage.enableMouseOver(20);
-
     menu.addChild(welcome, start, instructions);
     stage.addChild(menu);
     stage.update();
@@ -95,14 +93,14 @@ function handleStartMenuKey(event) {
         console.log("start game");
         choosePlayer();
     } else if (event.keyCode == 73) {
-        console.log('show instructions');
+        showInstructions();
     }
 }
 
 
 function showInstructions(event) {
     console.log("works");
-    var show = new createjs.Text('Instructions');
+    var show = new createjs.Text('Instructions', font);
     show.x = 200;
     show.y = 300;
 
@@ -111,23 +109,45 @@ function showInstructions(event) {
 }
 
 function handleChoosePlayerMenuKey(event) {
-  var player = 0;
-  if (event.keyCode == 65) {
-    console.log("wants to be player 1!");
-    player = 1;
-  } else if (event.keyCode == 66) {
-    console.log("wants to be player 2!");
-    player = 2;
-  } else if (event.keyCode == 67) {
-    console.log("wants to be player 3!");
-    player = 3;
-  }
+    let name, description;
+    const confirm = new createjs.Text("Do you want to choose this player? (y/n)", "30px VT323", textColor);
+    confirm.x = canvas.width / 2 - confirm.getMeasuredWidth() / 2;
+    confirm.y = (canvas.height / 15) * 12;
 
-  if(player != 0) {
+    if (event.keyCode == 65) {
+        stage.removeAllChildren();
+        name = new createjs.Text("Chad", "50px VT323", textColor);
+        playerNum = 1;
+    } else if (event.keyCode == 66) {
+        stage.removeAllChildren();
+        name = new createjs.Text("EECS", "50px VT323", textColor);
+        playerNum = 2;
+    } else if (event.keyCode == 67) {
+        stage.removeAllChildren();
+        name = new createjs.Text("Media Studies", "50px VT323", textColor);
+        playerNum = 3;
+    }
+    description = new createjs.Text("Enter Description", "40px VT323", textColor);
+    description.x = canvas.width / 2 - description.getMeasuredWidth() / 2;
+    description.y = (canvas.height / 15) * 8;
+
+    name.x = canvas.width / 2 - name.getMeasuredWidth() / 2;
+    name.y = (canvas.height / 15) * 4;
+
+    stage.addChild(name, confirm, description);
+    stage.update();
     document.removeEventListener('keydown', handleChoosePlayerMenuKey);
-    initPlayer(player);
-  }
+    document.addEventListener('keydown', proceedWithPlayer);
 }
+
+function proceedWithPlayer(event) {
+    if (event.keyCode == 89) {
+        initPlayer(playerNum);
+    } else if (event.keyCode == 78) {
+        handleChoosePlayerMenuKey();
+    }
+}
+
 
 function initPlayer(playerNum) {
   console.log("initializing player");
