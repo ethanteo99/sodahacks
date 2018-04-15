@@ -2,6 +2,10 @@ var canvas;
 var stage;
 var textColor = "#000000";
 var buttonColor = "#0033cc";
+
+var black = "#0E1111";
+var white = "#EEF0F0";
+var playerNum = 0;
 const width = 1000;
 const height = 600;
 const font = '30px VT323';
@@ -25,7 +29,7 @@ function init() {
   console.log("hello" + player.intelligence);
   canvas = document.getElementById("demoCanvas");
   stage = new createjs.Stage(canvas);
-
+  
   stage.update();
   createMenu();
 }
@@ -41,7 +45,7 @@ function choosePlayer() {
 
   var title = new createjs.Text("Choose Player", "70px VT323", textColor);
   title.x = canvas.width / 2 - title.getMeasuredWidth() / 2;
-  title.y = title.y = (canvas.height / 15) * 4;
+  title.y = canvas.height / 15 * 4;
 
   var player1 = new createjs.Text("Player 1 (a)", "50px VT323", textColor);
   player1.x = canvas.width / 2 - player1.getMeasuredWidth() / 2;
@@ -81,9 +85,6 @@ function createMenu() {
     instructions.x = canvas.width/2 - instructions.getMeasuredWidth()/2;
     instructions.y = 250;
 
-    instructions.addEventListener("mouseover", showInstructions);
-    stage.enableMouseOver(20);
-
     menu.addChild(welcome, start, instructions);
     stage.addChild(menu);
     stage.update();
@@ -96,14 +97,14 @@ function handleStartMenuKey(event) {
         console.log("start game");
         choosePlayer();
     } else if (event.keyCode == 73) {
-        console.log('show instructions');
+        showInstructions();
     }
 }
 
 
 function showInstructions(event) {
     console.log("works");
-    var show = new createjs.Text('Instructions');
+    var show = new createjs.Text('Instructions', font);
     show.x = 200;
     show.y = 300;
 
@@ -112,23 +113,45 @@ function showInstructions(event) {
 }
 
 function handleChoosePlayerMenuKey(event) {
-  var player = 0;
-  if (event.keyCode == 65) {
-    console.log("wants to be player 1!");
-    player = 1;
-  } else if (event.keyCode == 66) {
-    console.log("wants to be player 2!");
-    player = 2;
-  } else if (event.keyCode == 67) {
-    console.log("wants to be player 3!");
-    player = 3;
-  }
+    let name, description;
+    const confirm = new createjs.Text("Do you want to choose this player? (y/n)", "30px VT323", textColor);
+    confirm.x = canvas.width / 2 - confirm.getMeasuredWidth() / 2;
+    confirm.y = (canvas.height / 15) * 12;
 
-  if(player != 0) {
+    if (event.keyCode == 65) {
+        stage.removeAllChildren();
+        name = new createjs.Text("Chad", "50px VT323", textColor);
+        playerNum = 1;
+    } else if (event.keyCode == 66) {
+        stage.removeAllChildren();
+        name = new createjs.Text("EECS", "50px VT323", textColor);
+        playerNum = 2;
+    } else if (event.keyCode == 67) {
+        stage.removeAllChildren();
+        name = new createjs.Text("Media Studies", "50px VT323", textColor);
+        playerNum = 3;
+    }
+    description = new createjs.Text("Enter Description", "40px VT323", textColor);
+    description.x = canvas.width / 2 - description.getMeasuredWidth() / 2;
+    description.y = (canvas.height / 15) * 8;
+
+    name.x = canvas.width / 2 - name.getMeasuredWidth() / 2;
+    name.y = (canvas.height / 15) * 4;
+
+    stage.addChild(name, confirm, description);
+    stage.update();
     document.removeEventListener('keydown', handleChoosePlayerMenuKey);
-    initPlayer(player);
-  }
+    document.addEventListener('keydown', proceedWithPlayer);
 }
+
+function proceedWithPlayer(event) {
+    if (event.keyCode == 89) {
+        initPlayer(playerNum);
+    } else if (event.keyCode == 78) {
+        handleChoosePlayerMenuKey();
+    }
+}
+
 
 function initPlayer(playerNum) {
   console.log("initializing player");
@@ -149,6 +172,10 @@ function initPlayer(playerNum) {
     player.sleep = 30;
   }
   console.log(player);
+
+  document.removeEventListener('keydown', proceedWithPlayer);
+
+  hud();
 }
 
 function landmarkReached() {
@@ -165,3 +192,84 @@ function landmarkReached() {
   }
   console.log("Your new GPA is: " + player.GPA);
 }
+
+function hud(){
+    stage.removeAllChildren();
+    var background = new createjs.Shape();
+    background.graphics.beginFill("#4C5B5C").drawRect(0,0,1000,600);
+
+    var rec1 = new createjs.Shape();
+    rec1.graphics.setStrokeStyle(8, "round");
+    rec1.graphics.beginStroke(white).beginFill(black).drawRect(30, 370, 710, 200); 
+
+    var rec2 = new createjs.Shape();
+    rec2.graphics.setStrokeStyle(8, "round");
+    rec2.graphics.beginStroke(white).beginFill(black).drawRect(770, 22, 200, 318); 
+
+    var rec3 = new createjs.Shape();
+    rec3.graphics.setStrokeStyle(8, "round");
+    rec3.graphics.beginStroke(white).beginFill(black).drawRect(770, 370, 200, 200); 
+
+    var date = new createjs.Text('Year 1, Semester 1', '30px VT323', white);
+    date.x = 385 - date.getMeasuredWidth()/2;
+    date.y = 388;
+
+    var nametext = new createjs.Text('Chad', '30px VT323', white);
+    nametext.x = 870 - nametext.getMeasuredWidth()/2;
+    nametext.y = 190 + nametext.getMeasuredHeight();
+
+    var gpatext = new createjs.Text('GPA: 2.56', '30px VT323', white);
+    gpatext.x = 870 - gpatext.getMeasuredWidth()/2;
+    gpatext.y = 230 + gpatext.getMeasuredHeight();
+
+    var haptext = new createjs.Text('Happiness: 73%', '30px VT323', white);
+    haptext.x = 870 - haptext.getMeasuredWidth()/2;
+    haptext.y = 270 + haptext.getMeasuredHeight();
+
+    var atrtext = new createjs.Text('Attributes', '30px VT323', white);
+    atrtext.x = 870 - atrtext.getMeasuredWidth()/2;
+    atrtext.y = 390 + atrtext.getMeasuredHeight();
+
+
+    var inttext = new createjs.Text('Intelligence: 73', '25px VT323', white);
+    inttext.x = 870 - inttext.getMeasuredWidth()/2;
+    inttext.y = 440 + inttext.getMeasuredHeight();
+
+    var soctext = new createjs.Text('Social: 73', '25px VT323', white);
+    soctext.x = 870 - soctext.getMeasuredWidth()/2;
+    soctext.y = 470 + soctext.getMeasuredHeight();
+
+    var sletext = new createjs.Text('Sleep: 73', '25px VT323', white);
+    sletext.x = 870 - sletext.getMeasuredWidth()/2;
+    sletext.y = 500 + sletext.getMeasuredHeight();
+
+   
+
+    
+
+    var cha = new createjs.Bitmap("img/dogelet.png");
+    cha.x = 870 - 144/2;
+    cha.y = 50;
+    cha.scale = .5;
+    cha.image.onload = function() {
+    stage.update();
+    }
+ 
+
+    stage.addChild(background);
+    stage.addChild(rec1);
+    stage.addChild(rec2);
+    stage.addChild(rec3);
+    stage.addChild(date);
+    stage.addChild(gpatext);
+    stage.addChild(haptext); 
+    stage.addChild(atrtext);
+    stage.addChild(inttext);
+    stage.addChild(soctext);
+    stage.addChild(sletext);
+    stage.addChild(nametext);
+    stage.addChild(cha);
+    stage.update();
+    
+    }
+
