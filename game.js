@@ -49,6 +49,10 @@ function choosePlayer() {
   player1.x = canvas.width / 2 - player1.getMeasuredWidth() / 2;
   player1.y = (canvas.height / 15) * 8;
 
+  var player2 = new createjs.Text("Player 2 (b)", "50px VT323", textColor);
+  player2.x = canvas.width / 2 - player2.getMeasuredWidth() / 2;
+  player2.y = (canvas.height / 15) * 10;
+
   var player3 = new createjs.Text("Player 3 (c)", "50px VT323", textColor);
   player3.x = canvas.width / 2 - player3.getMeasuredWidth() / 2;
   player3.y = (canvas.height / 15) * 12;
@@ -146,19 +150,19 @@ function initPlayer(playerNum) {
   console.log("initializing player");
   if(playerNum == 1) {
     player.name = "chad";
-    player.intelligence = 20;
-    player.social = 30;
-    player.sleep = 25;
+    player.intelligence = 55;
+    player.social = 80;
+    player.sleep = 65;
   } else if(playerNum == 2) {
     player.name = "eecs";
-    player.intelligence = 35;
-    player.social = 20;
-    player.sleep = 20;
+    player.intelligence = 80;
+    player.social = 60;
+    player.sleep = 60;
   } else if(playerNum == 3) {
     player.name = "media studies";
-    player.intelligence = 20;
-    player.social = 25;
-    player.sleep = 30;
+    player.intelligence = 60;
+    player.social = 70;
+    player.sleep = 70;
   }
 
   document.removeEventListener('keydown', proceedWithPlayer);
@@ -187,31 +191,8 @@ function landmarkReached() {
   }
 }
 
-function endWeek() {
-  stage.removeAllChildren();
-  document.addEventListener('keydown', handleChooseFocus);
-
-  var title = new createjs.Text("Choose focus for next week", "70px VT323", textColor);
-  title.x = canvas.width / 2 - title.getMeasuredWidth() / 2;
-  title.y = title.y = (canvas.height / 15) * 4;
-
-  var sleep = new createjs.Text("Sleep (a)", "50px VT323", textColor);
-  sleep.x = canvas.width / 2 - sleep.getMeasuredWidth() / 2;
-  sleep.y = (canvas.height / 15) * 8;
-
-  var study = new createjs.Text("Study (b)", "50px VT323", textColor);
-  study.x = canvas.width / 2 - study.getMeasuredWidth() / 2;
-  study.y = (canvas.height / 15) * 10;
-
-  var party = new createjs.Text("Party (c)", "50px VT323", textColor);
-  party.x = canvas.width / 2 - party.getMeasuredWidth() / 2;
-  party.y = (canvas.height / 15) * 12;
-
-  stage.addChild(title, sleep, study, party);
-}
-
 function minusRandomScalar() {
-  return Math.floor(Math.random() * 5);
+  return Math.floor(Math.random() * 4);
 }
 
 function initStatChanges(focus) {
@@ -266,7 +247,10 @@ function initStatChanges(focus) {
 }
 
 function updateHappiness() {
-  player.happiness = player.happiness + (((.6 * player.social) + (.4 * player.sleep) - 80) / 100) * player.happiness;
+  player.happiness = Math.floor(player.happiness + (((.6 * player.social) + (.4 * player.sleep) - 75) / 100) * player.happiness);
+  if (player.happiness > 100) {
+    player.happiness = 100;
+  }
 }
 
 function gameplay() {
@@ -284,19 +268,19 @@ function nextWeek(event) {
 function options() {
     const option = new createjs.Text("Choose your focus for the week:", "25px VT323", white);
     option.x = 50;
-    option.y = 388 + 35;
+    option.y = 388 + 45;
 
     const study = new createjs.Text("(1) Sleep", "25px VT323", white);
     study.x = 50;
-    study.y = 388 + 65;
+    study.y = 388 + 75;
 
     const sleep = new createjs.Text("(2) Study", "25px VT323", white);
     sleep.x = 50;
-    sleep.y = 388 + 95;
+    sleep.y = 388 + 105;
 
     const party = new createjs.Text("(3) Party", "25px VT323", white);
     party.x = 50;
-    party.y = 388 + 125;
+    party.y = 388 + 135;
 
     stage.addChild(option, study, sleep, party);
     document.addEventListener('keydown', handleChooseFocus);
@@ -339,7 +323,7 @@ else if (player.GPA) {
   player2.x = canvas.width / 2 - player2.getMeasuredWidth() / 2;
   player2.y = (canvas.height / 15) * 10;
   stage.addChild(restartText);
-
+  stage.update();
 }
 
 function restartGame(event) {
@@ -416,10 +400,10 @@ function updateTextInBox(stringToShow) {
   if(stringToShow.length > 55) {
     var text1 = new createjs.Text(stringToShow.slice(0, 55), '30px VT323', white);
     text1.x = 385 - text1.getMeasuredWidth()/2;
-    text1.y = 388 + 60;
+    text1.y = 388 + 55;
     var text2 = new createjs.Text(stringToShow.slice(55), '30px VT323', white);
     text2.x = 385 - text2.getMeasuredWidth()/2;
-    text2.y = 388 + 100;
+    text2.y = 388 + 95;
     stage.addChild(text1, text2);
   } else {
     var text1 = new createjs.Text(stringToShow, '30px VT323', white);
