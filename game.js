@@ -76,7 +76,7 @@ function createMenu() {
     rec1.graphics.setStrokeStyle(0, "round");
     rec1.graphics.beginStroke("rgba(0,50,98,.8)").beginFill("rgba(0,50,98,.8)").drawRect(145, 100, 710, 200);
 
-    var welcome = new createjs.Text('Welcome to Cal!', '100px VT323', white);
+    var welcome = new createjs.Text('Berkeley VR', '100px VT323', white);
     welcome.x = canvas.width/2 - welcome.getMeasuredWidth()/2;
     welcome.y = 100;
 
@@ -109,11 +109,30 @@ function handleStartMenuKey(event) {
 
 function showInstructions(event) {
     console.log("works");
-    var show = new createjs.Text('Instructions', font);
-    show.x = 200;
-    show.y = 300;
 
-    stage.addChild(show);
+    var menu = new createjs.Container();
+    menu.x = 0;
+    menu.y = 0;
+    menu.setBounds(0, 0, width, height);
+
+    var rec2 = new createjs.Shape();
+    rec2.graphics.setStrokeStyle(0, "round");
+    rec2.graphics.beginStroke("rgba(0,50,98,.8)").beginFill("rgba(0,50,98,.8)").drawRect(145, 375, 710, 150);
+
+    var show = "Welcome to Berkeley! Two rules: GPA greater than 2 and avoid depression!"
+
+    var text1 = new createjs.Text(show.slice(0, 31), '30px VT323', white);
+    text1.x = canvas.width / 2 - text1.getMeasuredWidth() / 2;
+    text1.y = (canvas.height / 15) * 10;
+
+    var text2 = new createjs.Text(show.slice(31), '30px VT323', white);
+    text2.x = canvas.width / 2 - text2.getMeasuredWidth() / 2;
+    text2.y = (canvas.height / 15) * 11;
+
+    menu.addChild(rec2);
+    menu.addChild(text1, text2);
+    stage.addChild(menu);
+    stage.update();
 }
 
 function handleChoosePlayerMenuKey(event) {
