@@ -19,6 +19,10 @@ var player = {
   sleep: 0,
   GPA: 4.00,
   happiness: 100,
+  gradeSummary: {
+    semesters: [],
+    total: 0
+  }
 }
 
 function init() {
@@ -99,9 +103,6 @@ function createMenu() {
     stage.addChild(menu);
 }
 
-
-
-
 function handleStartMenuKey(event) {
     if (event.keyCode == 83) {
         document.removeEventListener('keydown', handleStartMenuKey);
@@ -112,10 +113,7 @@ function handleStartMenuKey(event) {
     }
 }
 
-
 function showInstructions(event) {
-    console.log("works");
-
     var menu = new createjs.Container();
     menu.x = 0;
     menu.y = 0;
@@ -125,7 +123,7 @@ function showInstructions(event) {
     rec2.graphics.setStrokeStyle(0, "round");
     rec2.graphics.beginStroke("rgba(0,50,98,.8)").beginFill("rgba(0,50,98,.8)").drawRect(145, 375, 710, 150);
 
-    var show = "Welcome to Berkeley! Two rules: GPA greater than 2 and avoid depression!"
+    var show = "Welcome to Berkeley! Two rules: GPA greater than 2.0 and avoid depression!"
 
     var text1 = new createjs.Text(show.slice(0, 31), '30px VT323', white);
     text1.x = canvas.width / 2 - text1.getMeasuredWidth() / 2;
@@ -134,8 +132,6 @@ function showInstructions(event) {
     var text2 = new createjs.Text(show.slice(31), '30px VT323', white);
     text2.x = canvas.width / 2 - text2.getMeasuredWidth() / 2;
     text2.y = (canvas.height / 15) * 11;
-
-
 
     menu.addChild(rec2);
     menu.addChild(text1, text2);
@@ -148,7 +144,6 @@ function handleChoosePlayerMenuKey(event) {
     const confirm = new createjs.Text("Do you want to choose this player? (y/n)", "30px VT323", white);
     confirm.x = canvas.width / 2 - confirm.getMeasuredWidth() / 2;
     confirm.y = (canvas.height / 15) * 12;
-
 
     var background = new createjs.Shape();
     background.graphics.beginFill("rgb(0,50,98)").drawRect(0,0,1000,600);
@@ -204,24 +199,20 @@ function bideo(){
 
     }, 4500);
 
-
-
-
-
 }
 
 function initPlayer(playerNum) {
   console.log("initializing player");
   if(playerNum == 1) {
     player.name = "Chad";
-    player.intelligence = 55;
-    player.social = 80;
+    player.intelligence = 60;
+    player.social = 75;
     player.sleep = 65;
   } else if(playerNum == 2) {
     player.name = "EECS";
-    player.intelligence = 80;
-    player.social = 60;
-    player.sleep = 60;
+    player.intelligence = 75;
+    player.social = 65;
+    player.sleep = 65;
   } else if(playerNum == 3) {
     player.name = "Media Studies";
     player.intelligence = 60;
@@ -237,24 +228,48 @@ function initPlayer(playerNum) {
 function landmarkReached() {
   var difficulty;
   if (player.name == "Chad") {
-    difficulty = 80;
+    difficulty = 65;
   } else if (player.name == "EECS") {
-    difficulty = 85;
+    difficulty = 80;
   } else {
-    difficulty = 75;
+    difficulty = 60;
   }
 
-  var change = ((player.intelligence*0.7 + player.sleep*0.3 - difficulty)/100)*player.GPA;
-  player.GPA = Math.round((player.GPA + change)*100)/100;
-    if(change > 0.1) {
-        updateTextInBox("You did well on your finals!" + " Your new GPA is: " + player.GPA);
+  var change = ((player.intelligence*0.9 + player.sleep*0.1 - difficulty)/100) + 0.03;
+    if(change > 0.15) {
+        var numSems = player.gradeSummary.semesters.push(4);
+        var sumGPA = player.gradeSummary.semesters.reduce(function(a, b) { return a + b; }, 0);
+        player.GPA = sumGPA / numSems;
+        player.GPA = Math.round((player.GPA + change)*100)/100;
         if(player.GPA > 4) {
           player.GPA = 4.00;
         }
-    } else if (change < -0.1) {
+        updateTextInBox("You did extremely well on your finals!" + " Your new GPA is: " + player.GPA);
+    } else if (change > 0.75) {
+        var numSems = player.gradeSummary.semesters.push(3.5 + minusRandomScalar()/10);
+        var sumGPA = player.gradeSummary.semesters.reduce(function(a, b) { return a + b; }, 0);
+        player.GPA = sumGPA / numSems;
+        player.GPA = Math.round((player.GPA + change)*100)/100;
+        updateTextInBox("You did well on your finals!" + " Your new GPA is: " + player.GPA);
+    } else if (change > 0) {
+        var numSems = player.gradeSummary.semesters.push(3.0 + minusRandomScalar()/10);
+        var sumGPA = player.gradeSummary.semesters.reduce(function(a, b) { return a + b; }, 0);
+        player.GPA = sumGPA / numSems;
+        player.GPA = Math.round((player.GPA + change)*100)/100;
+        updateTextInBox("You did okay on your finals." + " Your new GPA is: " + player.GPA);
+    } else if (change > -.1) {
+        var numSems = player.gradeSummary.semesters.push(2.0 + minusRandomScalar()/10);
+        var sumGPA = player.gradeSummary.semesters.reduce(function(a, b) { return a + b; }, 0);
+        player.GPA = sumGPA / numSems;
+        player.GPA = Math.round((player.GPA + change)*100)/100;
         updateTextInBox("You did poorly on your finals." + " Your new GPA is: " + player.GPA);
     } else {
-        updateTextInBox("You did okay on your finals." + " Your new GPA is: " + player.GPA);
+        var numSems = player.gradeSummary.semesters.push(1.5 + minusRandomScalar()/10);
+        var sumGPA = player.gradeSummary.semesters.reduce(function(a, b) { return a + b; }, 0);
+        player.GPA = sumGPA / numSems;
+        player.GPA = Math.round((player.GPA + change)*100)/100;
+        updateTextInBox("You completely failed your finals." + " Your new GPA is: " + player.GPA);
+
     }
   document.addEventListener('keydown', nextWeek);
 }
@@ -264,7 +279,7 @@ function minusRandomScalar() {
 }
 
 function initStatChanges(focus) {
-  var scalar = Math.floor(Math.random() * 6 + 1);
+  var scalar = Math.floor(Math.random() * 5 + 1);
   if (focus == 1) {
     $("#bed").fadeIn();
     $("#moffit").fadeOut();
@@ -283,7 +298,6 @@ function initStatChanges(focus) {
   }
 
   if (focus == 2) {
-
     $("#moffit").fadeIn();
     $("#party").fadeOut();
     $("#bed").fadeOut();
@@ -300,7 +314,6 @@ function initStatChanges(focus) {
   }
 
   if (focus == 3) {
-
     $("#moffit").fadeOut();
     $("#party").fadeIn();
     $("#bed").fadeOut();
@@ -322,12 +335,11 @@ function initStatChanges(focus) {
   } else {
     document.removeEventListener('keydown', handleChooseFocus);
     document.addEventListener('keydown', nextWeek);
-}
-
+  }
 }
 
 function updateHappiness() {
-  player.happiness = Math.floor(player.happiness + (((.6 * player.social) + (.4 * player.sleep) - 65) / 100) * player.happiness);
+  player.happiness = Math.floor(player.happiness + (((.6 * player.social) + (.4 * player.sleep) - 63) / 100) * player.happiness);
   if (player.happiness > 100) {
     player.happiness = 100;
   }
@@ -345,14 +357,18 @@ function nextWeek(event) {
         if (week == 9) {
             semester++;
             week = 1;
-            landmarkReached();
+            if (year == 4 && semester == 3) {
+                finishedGame();
+            } else {
+                landmarkReached();
+            }
             return;
         }
         if (semester == 3) {
             year++;
             semester = 1;
         }
-        if (Math.random() > 0.9) {
+        if (Math.random() > 0.8) {
             challenge();
             return;
         }
@@ -362,11 +378,13 @@ function nextWeek(event) {
 
 function challenge() {
     hud();
+    document.removeEventListener('keydown', nextWeek);
     let prompt;
     let choice1;
     let choice2;
     var random = Math.random();
-    if (random > 0.5) {
+    console.log(random);
+    if (random > 0.7) {
         prompt = new createjs.Text("Someone from Alpha Kappa Psi flyers you on Sproul. What do you do?", "25px VT323", white);
         choice1 = new createjs.Text("(1) Attend their event", "25px VT323", white);
         choice2 = new createjs.Text("(2) Walk straight past them", "25px VT323", white);
@@ -402,8 +420,8 @@ function handleSexileChallenge(event) {
         }
     } else if (event.keyCode == 50) {
         if (random > 0.2) {
-            updateTextInBox("Your roommate is furious. -3 sleep");
-            player.sleep -= 3;
+            updateTextInBox("Your roommate is furious. -3 social");
+            player.social -= 3;
         } else {
             updateTextInBox("Your roommate is understanding. +1 social");
             player.social += 1;
@@ -423,10 +441,10 @@ function handleAKPChallenge() {
             player.happiness -= 2;
         } else if (random > 0.1) {
             updateTextInBox("You learn how to make a blockchain. +5 intelligence");
-            player.intelligence += 2;
+            player.intelligence += 5;
         } else {
             updateTextInBox("You learn how to implement machine learning. +5 intelligence");
-            player.intelligence += 3;
+            player.intelligence += 5;
         }
     } else if (event.keyCode == 50) {
         if (random > 0.5) {
@@ -448,6 +466,13 @@ function afterChallenge(event) {
         gameplay();
         return;
     }
+}
+
+function finishedGame() {
+  year = 4;
+  semester = 2;
+  week = 8;
+  youLost("Congratulations! You graduated Berkeley! Go Bears!")
 }
 
 function options() {
@@ -491,7 +516,6 @@ function lostPage() {
   // "You develop depression. You should've gone to UCLA"
   var lostText;
   document.removeEventListener('keydown', nextWeek);
-  document.addEventListener('keydown', restartGame);
   if (player.happiness <= 0) {
     youLost("You developed crippling depression. Should've gone to UCLA.");
     // lostText.x = canvas.width / 2 - lostText.getMeasuredWidth() / 2;
@@ -515,7 +539,6 @@ function restartGame(event) {
 
 function hud(){
     stage.removeAllChildren();
-
 
     var rec1 = new createjs.Shape();
     rec1.graphics.setStrokeStyle(8, "round");
@@ -562,7 +585,6 @@ function hud(){
     sletext.x = 870 - sletext.getMeasuredWidth()/2;
     sletext.y = 500 + sletext.getMeasuredHeight();
 
-
     var path;
 
     if (player.happiness > 70){
@@ -571,7 +593,7 @@ function hud(){
     else if (player.happiness > 40){
       path = "img/"+playerNum+"meh.png";
     }
-    else{
+    else {
       path = "img/"+playerNum+"sad.png";
     }
 
@@ -629,9 +651,9 @@ function youLost(stringToShow) {
   document.removeEventListener('keydown', nextWeek);
   document.removeEventListener('keydown', handleChooseFocus);
 
-
   const next = new createjs.Text("Restart (a)", "25px VT323", white);
   next.x = 385 - next.getMeasuredWidth()/2;
   next.y = 388 + 145;
   stage.addChild(next);
+  document.addEventListener('keydown', restartGame);
 }
