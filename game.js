@@ -136,7 +136,7 @@ function showInstructions(event) {
 }
 
 function handleChoosePlayerMenuKey(event) {
-    let name, description;
+    let name, description, descriptionText;
     const confirm = new createjs.Text("Do you want to choose this player? (y/n)", "30px VT323", textColor);
     confirm.x = canvas.width / 2 - confirm.getMeasuredWidth() / 2;
     confirm.y = (canvas.height / 15) * 12;
@@ -144,17 +144,23 @@ function handleChoosePlayerMenuKey(event) {
     if (event.keyCode == 65) {
         stage.removeAllChildren();
         name = new createjs.Text("Chad", "50px VT323", textColor);
+        descriptionText = "Chad's the man. He hangs out with all the hottest dudes.";
         playerNum = 1;
     } else if (event.keyCode == 66) {
         stage.removeAllChildren();
         name = new createjs.Text("EECS", "50px VT323", textColor);
+        descriptionText = '\"Here\'s is your ticket, enjoy the movie\"';
+        var description2 = new createjs.Text('"You too"', "40px VT323", textColor);
+        description2.x = canvas.width / 2 - description2.getMeasuredWidth() / 2;
+        description2.y = (canvas.height / 15) * 9;
         playerNum = 2;
     } else if (event.keyCode == 67) {
         stage.removeAllChildren();
         name = new createjs.Text("Media Studies", "50px VT323", textColor);
+        descriptionText = "He's also considering a public health minor.";
         playerNum = 3;
     }
-    description = new createjs.Text("Enter Description", "40px VT323", textColor);
+    description = new createjs.Text(descriptionText, "40px VT323", textColor);
     description.x = canvas.width / 2 - description.getMeasuredWidth() / 2;
     description.y = (canvas.height / 15) * 8;
 
@@ -162,6 +168,9 @@ function handleChoosePlayerMenuKey(event) {
     name.y = (canvas.height / 15) * 4;
 
     stage.addChild(name, confirm, description);
+    if (playerNum == 2) {
+      stage.addChild(description2);
+    }
     document.removeEventListener('keydown', handleChoosePlayerMenuKey);
     document.addEventListener('keydown', proceedWithPlayer);
 }
@@ -272,6 +281,9 @@ function initStatChanges(focus) {
   if (player.happiness <= 0 || player.GPA < 2) {
     console.log("You lose please quit.");
     lostPage();
+  }
+  else if (year > 4) {
+    winScreen();
   } else {
     document.removeEventListener('keydown', handleChooseFocus);
     document.addEventListener('keydown', nextWeek);
@@ -291,10 +303,33 @@ function gameplay() {
     options();
 }
 
+function winScreen() {
+    document.removeEventListener('keydown', nextWeek);
+    document.addEventListener('keydown', restartGame);
+    var winText = "Congratulations! You graduated ";
+
+    if (playerNum == 1) {
+      winText = winText + "and became a famous body builder!";
+    }
+    else if (playerNum == 2) {
+      winText = winText + "and got a job and  now work 40 hours a week!";
+    }
+    else if (playerNum == 3) {
+      winText = winText + "and moved back in  with your parents!";
+    }
+    console.log(winText);
+    endText(winText);
+  }
+
 function nextWeek(event) {
     if (event.keyCode == 32) {
         document.removeEventListener('keydown', nextWeek);
         week++;
+        console.log("weeks going by");
+        if (year > 4) {
+          console.log("Got here");
+          winScreen();
+        }
         if (week == 9) {
             semester++;
             week = 1;
@@ -352,13 +387,13 @@ function lostPage() {
   document.removeEventListener('keydown', nextWeek);
   document.addEventListener('keydown', restartGame);
   if (player.happiness <= 0) {
-    youLost("You developed crippling depression. Should've gone to UCLA.");
+    endText("You developed crippling depression. Should've gone to UCLA.");
     // lostText.x = canvas.width / 2 - lostText.getMeasuredWidth() / 2;
     // lostText.y = (canvas.height / 16) * 4;
   }
 
   else if (player.GPA < 2) {
-    youLost("You get put on academic probation. You won't get an internship. You won't be able to feed your family.");
+    endText("You get put on academic probation. You won't get  an internship. You won't be able to feed your family.");
     // lostText.x = canvas.width / 2 - lostText.getMeasuredWidth() / 2;
     // lostText.y = (canvas.height / 16) * 4;
   }
@@ -471,7 +506,7 @@ function updateTextInBox(stringToShow) {
   stage.addChild(next);
 }
 
-function youLost(stringToShow) {
+function endText(stringToShow) {
   hud();
   if(stringToShow.length > 50) {
     var text1 = new createjs.Text(stringToShow.slice(0, 50), '30px VT323', white);
@@ -487,9 +522,9 @@ function youLost(stringToShow) {
     text1.y = 388 + 50;
     stage.addChild(text1);
   }
+  console.log("Why wont this work");
   document.removeEventListener('keydown', nextWeek);
   document.removeEventListener('keydown', handleChooseFocus);
-
 
   const next = new createjs.Text("Restart (a)", "25px VT323", white);
   next.x = 385 - next.getMeasuredWidth()/2;
