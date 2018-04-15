@@ -14,7 +14,6 @@ function init(){
   stage = new createjs.Stage(canvas);
 
   stage.update();
-
   createMenu();
 }
  
