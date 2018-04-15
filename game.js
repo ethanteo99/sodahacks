@@ -407,13 +407,13 @@ function hud(){
     var path;
 
     if (player.happiness > 70){
-      path = "img/"+player.name+"hap.png";
+      path = "img/"+playerNum+"hap.png";
     }
     else if (player.happiness > 40){
-      path = "img/"+player.name+"meh.png";
+      path = "img/"+playerNum+"meh.png";
     }
     else{
-      path = "img/"+player.name+"sad.png";
+      path = "img/"+playerNum+"sad.png";
     }
 
     var cha = new createjs.Bitmap(path);
