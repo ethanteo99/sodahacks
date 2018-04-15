@@ -19,22 +19,12 @@ var player = {
   happiness: 100,
 }
 
-var intelligence;
-var social;
-var energy;
-var GPA;
-var happiness;
-
 function init() {
   console.log("hello" + player.intelligence);
   canvas = document.getElementById("demoCanvas");
   stage = new createjs.Stage(canvas);
-<<<<<<< HEAD
-  createjs.Ticker.on("tick", stage);
-=======
 
->>>>>>> e33d08817943531f4a96ef29a05a7fc166861e62
-  stage.update();
+  createjs.Ticker.on("tick", stage);
   createMenu();
 }
 
@@ -68,7 +58,6 @@ function choosePlayer() {
   player3.y = (canvas.height / 15) * 12;
 
   stage.addChild(title, player1, player2, player3);
-  stage.update();
 }
 
 function createMenu() {
@@ -95,7 +84,6 @@ function createMenu() {
 
     menu.addChild(welcome, start, instructions);
     stage.addChild(menu);
-    stage.update();
 }
 
 
@@ -117,7 +105,6 @@ function showInstructions(event) {
     show.y = 300;
 
     stage.addChild(show);
-    stage.update();
 }
 
 function handleChoosePlayerMenuKey(event) {
@@ -147,7 +134,6 @@ function handleChoosePlayerMenuKey(event) {
     name.y = (canvas.height / 15) * 4;
 
     stage.addChild(name, confirm, description);
-    stage.update();
     document.removeEventListener('keydown', handleChoosePlayerMenuKey);
     document.addEventListener('keydown', proceedWithPlayer);
 }
@@ -159,7 +145,6 @@ function proceedWithPlayer(event) {
         handleChoosePlayerMenuKey();
     }
 }
-
 
 function initPlayer(playerNum) {
   console.log("initializing player");
@@ -179,15 +164,13 @@ function initPlayer(playerNum) {
     player.social = 25;
     player.sleep = 30;
   }
-  console.log(player);
 
   document.removeEventListener('keydown', proceedWithPlayer);
 
-  hud();
+  updateTextInBox("test text");
 }
 
 function landmarkReached() {
-  console.log("Received final grades.");
   var difficulty;
   if (player.name == "Chad") {
     difficulty = 80;
@@ -199,20 +182,18 @@ function landmarkReached() {
   var change = ((player.intelligence*0.7 + player.sleep*0.3 - difficulty)/100)*player.GPA;
   player.GPA = player.GPA - change;
   if(change > 0) {
-    console.log("You did well on your finals!");
+    updateTextInBox("You did well on your finals!" + " Your new GPA is: " + player.GPA);
     if(player.GPA > 4) {
       player.GPA = 4;
     }
   } else if (change < 0) {
-    console.log("You did poorly on your finals.");
+    updateTextInBox("You did poorly on your finals." + " Your new GPA is: " + player.GPA);
   }
-  console.log("Your new GPA is: " + player.GPA);
 }
 
 function endWeek() {
   stage.removeAllChildren();
   document.addEventListener('keydown', handleChooseFocus);
-  console.log("choose player!");
 
   var title = new createjs.Text("Choose focus for next week", "70px VT323", textColor);
   title.x = canvas.width / 2 - title.getMeasuredWidth() / 2;
@@ -231,19 +212,18 @@ function endWeek() {
   party.y = (canvas.height / 15) * 12;
 
   stage.addChild(title, sleep, study, party);
-  stage.update();
 }
 
 function handleChooseFocus(event) {
   var focus = 0;
   if (event.keyCode == 65) {
-    console.log("Let's focus on sleeping!");
+    updateTextInBox("Let's focus on sleeping!");
     focus = 1;
   } else if (event.keyCode == 66) {
-    console.log("Let's focus on studying!");
+    updateTextInBox("Let's focus on studying!");
     focus = 2;
   } else if (event.keyCode == 67) {
-    console.log("Let's focus on partying!");
+    updateTextInBox("Let's focus on partying!");
     focus = 3;
   }
 
@@ -262,10 +242,10 @@ function initStatChanges(focus) {
   if (focus == 1) {
 
     if (scalar == 1 || scalar == 2) {
-      console.log("Despite trying your best, you had a rough week of sleep: +" + scalar);
+      updateTextInBox("Despite trying your best, you had a rough week of sleep: +" + scalar);
     }
     else {
-      console.log("You sleep like a baby: +" + scalar);
+      updateTextInBox("You sleep like a baby: +" + scalar);
     }
 
     player.sleep = player.sleep + scalar;
@@ -276,31 +256,37 @@ function initStatChanges(focus) {
   if (focus == 2) {
 
     if (scalar == 1 || scalar == 2) {
-      console.log("Even after studying, the concepts are still fuzzy in your brain: +" + scalar);
+      updateTextInBox("Even after studying, the concepts are still fuzzy in your brain: +" + scalar);
     } else {
-      console.log("You spend countless hours at Moffitt, shower less, and stink more: +" + scalar);
+      updateTextInBox("You spend countless hours at Moffitt, shower less, and stink more: +" + scalar);
     }
 
     player.sleep = player.sleep - minusRandomScalar;
     player.intelligence = player.intelligence + scalar;
     player.social = player.social - minusRandomScalar;
-
   }
 
   if (focus == 3) {
     if (scalar == 1 || scalar == 2) {
-      console.log("Your friends are busy this week, but they manage to squeeze in a little time for you +" + scalar);
+      updateTextInBox("Your friends are busy this week, but they manage to squeeze in a little time for you +" + scalar);
     }
     else {
-      console.log("You go to a frat party, shotgun a beer, slap a wine bag, and win a game of beer pong +" + scalar);
+      updateTextInBox("You go to a frat party, shotgun a beer, slap a wine bag, and win a game of beer pong +" + scalar);
     }
-
     player.sleep = player.sleep - minusRandomScalar;
     player.intelligence = player.intelligence - minusRandomScalar;
     player.social = player.social + scalar;
-
   }
 
+  updateHappiness();
+  if (happiness <= 0) {
+    updateTextInBox("You lose please quit.");
+  }
+
+}
+
+function updateHappiness() {
+  player.happiness = player.happiness + (((.6 * social) + (.4 * sleep) - 80) / 100) * player.happiness;
 }
 
 function hud(){
@@ -320,7 +306,7 @@ function hud(){
     rec3.graphics.setStrokeStyle(8, "round");
     rec3.graphics.beginStroke(white).beginFill(black).drawRect(770, 370, 200, 200);
 
-    var date = new createjs.Text('Year 1, Semester 1', '30px VT323', white);
+    var date = new createjs.Text('Year 1, Semester 1', '40px VT323', white);
     date.x = 385 - date.getMeasuredWidth()/2;
     date.y = 388;
 
@@ -358,24 +344,29 @@ function hud(){
     cha.y = 50;
     cha.scale = .5;
 
-    cha.image.onload = function() {
-    stage.update();
-    }
-
-
     stage.addChild(background);
-    stage.addChild(rec1);
-    stage.addChild(rec2);
-    stage.addChild(rec3);
+    stage.addChild(rec1, rec2, rec3);
     stage.addChild(date);
-    stage.addChild(gpatext);
-    stage.addChild(haptext);
-    stage.addChild(atrtext);
-    stage.addChild(inttext);
-    stage.addChild(soctext);
-    stage.addChild(sletext);
-    stage.addChild(nametext);
+    stage.addChild(gpatext, haptext, atrtext, inttext, soctext, sletext, nametext);
     stage.addChild(cha);
-    stage.update();
+}
 
-    }
+function updateTextInBox(stringToShow) {
+  hud();
+
+  if(stringToShow.length > 55) {
+    var text1 = new createjs.Text(stringToShow.slice(0, 55), '30px VT323', white);
+    text1.x = 385 - text1.getMeasuredWidth()/2;
+    text1.y = 388 + 60;
+    var text2 = new createjs.Text(stringToShow.slice(55), '30px VT323', white);
+    text2.x = 385 - text2.getMeasuredWidth()/2;
+    text2.y = 388 + 100;
+    stage.addChild(text1, text2);
+  } else {
+    var text1 = new createjs.Text(stringToShow, '30px VT323', white);
+    text1.x = 385 - text1.getMeasuredWidth()/2;
+    text1.y = 388 + 50;
+    stage.addChild(text1);
+    stage.addChild(text1);
+  }
+}
