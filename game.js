@@ -17,7 +17,7 @@ var player = {
   intelligence: 0,
   social: 0,
   sleep: 0,
-  GPA: 4,
+  GPA: 4.00,
   happiness: 100,
 }
 
@@ -190,11 +190,11 @@ function landmarkReached() {
   }
 
   var change = ((player.intelligence*0.7 + player.sleep*0.3 - difficulty)/100)*player.GPA;
-  player.GPA = player.GPA + change;
+  player.GPA = Math.round((player.GPA + change)*100)/100;
     if(change > 0.1) {
         updateTextInBox("You did well on your finals!" + " Your new GPA is: " + player.GPA);
         if(player.GPA > 4) {
-          player.GPA = 4;
+          player.GPA = 4.00;
         }
     } else if (change < -0.1) {
         updateTextInBox("You did poorly on your finals." + " Your new GPA is: " + player.GPA);
@@ -257,7 +257,7 @@ function initStatChanges(focus) {
     document.removeEventListener('keydown', handleChooseFocus);
     document.addEventListener('keydown', nextWeek);
 }
-  
+
 }
 
 function updateHappiness() {
@@ -342,7 +342,7 @@ function lostPage() {
     youLost("You get put on academic probation. You won't get an internship. You won't be able to feed your family.");
     // lostText.x = canvas.width / 2 - lostText.getMeasuredWidth() / 2;
     // lostText.y = (canvas.height / 16) * 4;
-  } 
+  }
 }
 
 function restartGame(event) {
@@ -470,7 +470,7 @@ function youLost(stringToShow) {
   }
   document.removeEventListener('keydown', nextWeek);
   document.removeEventListener('keydown', handleChooseFocus);
-  
+
 
   const next = new createjs.Text("Restart (a)", "25px VT323", white);
   next.x = 385 - next.getMeasuredWidth()/2;
