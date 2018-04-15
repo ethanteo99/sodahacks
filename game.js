@@ -2,6 +2,9 @@ var canvas;
 var stage;
 var textColor = "#000000";
 var buttonColor = "#0033cc";
+
+var black = "#0E1111";
+var white = "#EEF0F0";
 var playerNum = 0;
 const width = 1000;
 const height = 600;
@@ -25,7 +28,7 @@ var happiness;
 function init() {
   canvas = document.getElementById("demoCanvas");
   stage = new createjs.Stage(canvas);
-
+  
   stage.update();
   createMenu();
 }
@@ -168,4 +171,89 @@ function initPlayer(playerNum) {
     player.sleep = 30;
   }
   console.log(player);
+
+  document.removeEventListener('keydown', proceedWithPlayer);
+
+  hud();
 }
+
+function hud(){
+    stage.removeAllChildren();
+    var background = new createjs.Shape();
+    background.graphics.beginFill("#4C5B5C").drawRect(0,0,1000,600);
+
+    var rec1 = new createjs.Shape();
+    rec1.graphics.setStrokeStyle(8, "round");
+    rec1.graphics.beginStroke(white).beginFill(black).drawRect(30, 370, 710, 200); 
+
+    var rec2 = new createjs.Shape();
+    rec2.graphics.setStrokeStyle(8, "round");
+    rec2.graphics.beginStroke(white).beginFill(black).drawRect(770, 22, 200, 318); 
+
+    var rec3 = new createjs.Shape();
+    rec3.graphics.setStrokeStyle(8, "round");
+    rec3.graphics.beginStroke(white).beginFill(black).drawRect(770, 370, 200, 200); 
+
+    var date = new createjs.Text('Year 1, Semester 1', '30px VT323', white);
+    date.x = 385 - date.getMeasuredWidth()/2;
+    date.y = 388;
+
+    var nametext = new createjs.Text('Chad', '30px VT323', white);
+    nametext.x = 870 - nametext.getMeasuredWidth()/2;
+    nametext.y = 190 + nametext.getMeasuredHeight();
+
+    var gpatext = new createjs.Text('GPA: 2.56', '30px VT323', white);
+    gpatext.x = 870 - gpatext.getMeasuredWidth()/2;
+    gpatext.y = 230 + gpatext.getMeasuredHeight();
+
+    var haptext = new createjs.Text('Happiness: 73%', '30px VT323', white);
+    haptext.x = 870 - haptext.getMeasuredWidth()/2;
+    haptext.y = 270 + haptext.getMeasuredHeight();
+
+    var atrtext = new createjs.Text('Attributes', '30px VT323', white);
+    atrtext.x = 870 - atrtext.getMeasuredWidth()/2;
+    atrtext.y = 390 + atrtext.getMeasuredHeight();
+
+
+    var inttext = new createjs.Text('Intelligence: 73', '25px VT323', white);
+    inttext.x = 870 - inttext.getMeasuredWidth()/2;
+    inttext.y = 440 + inttext.getMeasuredHeight();
+
+    var soctext = new createjs.Text('Social: 73', '25px VT323', white);
+    soctext.x = 870 - soctext.getMeasuredWidth()/2;
+    soctext.y = 470 + soctext.getMeasuredHeight();
+
+    var sletext = new createjs.Text('Sleep: 73', '25px VT323', white);
+    sletext.x = 870 - sletext.getMeasuredWidth()/2;
+    sletext.y = 500 + sletext.getMeasuredHeight();
+
+   
+
+    
+
+    var cha = new createjs.Bitmap("img/dogelet.png");
+    cha.x = 870 - 144/2;
+    cha.y = 50;
+    cha.scale = .5;
+    cha.image.onload = function() {
+    stage.update();
+    }
+ 
+
+    stage.addChild(background);
+    stage.addChild(rec1);
+    stage.addChild(rec2);
+    stage.addChild(rec3);
+    stage.addChild(date);
+    stage.addChild(gpatext);
+    stage.addChild(haptext); 
+    stage.addChild(atrtext);
+    stage.addChild(inttext);
+    stage.addChild(soctext);
+    stage.addChild(sletext);
+    stage.addChild(nametext);
+    stage.addChild(cha);
+    stage.update();
+    
+    }
+
