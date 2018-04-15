@@ -84,9 +84,9 @@ function createMenu() {
     rec1.graphics.setStrokeStyle(0, "round");
     rec1.graphics.beginStroke("rgba(0,50,98,.8)").beginFill("rgba(0,50,98,.8)").drawRect(145, 100, 710, 200);
 
-    var welcome = new createjs.Text('Berkeley VR', '100px VT323', white);
+    var welcome = new createjs.Text('The Berkeley Experience', '70px VT323', white);
     welcome.x = canvas.width/2 - welcome.getMeasuredWidth()/2;
-    welcome.y = 100;
+    welcome.y = 120;
 
 
     var start = new createjs.Text('Start Game (S)', '40px VT323', white);
@@ -369,8 +369,9 @@ function gameplay() {
 }
 
 function winScreen() {
-    document.removeEventListener('keydown', nextWeek);
-    document.addEventListener('keydown', restartGame);
+    year = 4;
+    semester = 2;
+    week = 8;
     var winText = "Congratulations! You graduated ";
 
     if (playerNum == 1) {
@@ -391,33 +392,125 @@ function nextWeek(event) {
         document.removeEventListener('keydown', nextWeek);
         week++;
         console.log("weeks going by");
-        if (year > 4) {
-          console.log("Got here");
-          winScreen();
-        }
         if (week == 9) {
             semester++;
             week = 1;
-            landmarkReached();
+            if (year == 4 && semester == 3) {
+                winScreen();
+            } else {
+                landmarkReached();
+            }
             return;
         }
         if (semester == 3) {
             year++;
             semester = 1;
         }
-        if (year < 5) {
-          gameplay();
-        } else {
-          finishedGame();
+        if (Math.random() > 0.8) {
+            challenge();
+            return;
         }
+        gameplay();
+    }
+}
+
+function challenge() {
+    hud();
+    document.removeEventListener('keydown', nextWeek);
+    let prompt;
+    let choice1;
+    let choice2;
+    var random = Math.random();
+    console.log(random);
+    if (random > 0.7) {
+        prompt = new createjs.Text("Someone from Alpha Kappa Psi flyers you on Sproul. What do you do?", "25px VT323", white);
+        choice1 = new createjs.Text("(1) Attend their event", "25px VT323", white);
+        choice2 = new createjs.Text("(2) Walk straight past them", "25px VT323", white);
+        document.addEventListener('keydown', handleAKPChallenge);
+    } else {
+        prompt = new createjs.Text("It seems that you have been sexiled. What do you do?", "25px VT323", white);
+        choice1 = new createjs.Text("(1) Sleep in the hallway", "25px VT323", white);
+        choice2 = new createjs.Text("(2) Knock on the door angrily", "25px VT323", white);
+        document.addEventListener('keydown', handleSexileChallenge);
+    }
+
+    prompt.x = 50;
+    prompt.y = 388 + 45;
+
+    choice1.x = 50;
+    choice1.y = 388 + 75;
+
+    choice2.x = 50;
+    choice2.y = 388 + 105;
+
+    stage.addChild(prompt, choice1, choice2);
+}
+
+function handleSexileChallenge(event) {
+    var random = Math.random();
+    if (event.keyCode == 49) {
+        if (random > 0.5) {
+            updateTextInBox("The floor is cold and you have trouble falling asleep. -5 sleep");
+            player.sleep -= 2;
+        } else {
+            updateTextInBox("You end up staying up all night chatting with a friend about roommate problems. +2 social");
+            player.social += 2;
+        }
+    } else if (event.keyCode == 50) {
+        if (random > 0.2) {
+            updateTextInBox("Your roommate is furious. -3 social");
+            player.social -= 3;
+        } else {
+            updateTextInBox("Your roommate is understanding. +1 social");
+            player.social += 1;
+        }
+
+    }
+
+    document.removeEventListener('keydown', handleSexileChallenge);
+    document.addEventListener('keydown', afterChallenge);
+}
+
+function handleAKPChallenge() {
+    var random = Math.random();
+    if (event.keyCode == 49) {
+        if (random > 0.2) {
+            updateTextInBox("It's a waste of your time and you learn nothing. -2% happiness");
+            player.happiness -= 2;
+        } else if (random > 0.1) {
+            updateTextInBox("You learn how to make a blockchain. +5 intelligence");
+            player.intelligence += 5;
+        } else {
+            updateTextInBox("You learn how to implement machine learning. +5 intelligence");
+            player.intelligence += 5;
+        }
+    } else if (event.keyCode == 50) {
+        if (random > 0.5) {
+            updateTextInBox("Turns out the person flyering was your friend. They are now angry at you for ignoring them. -3 social");
+            player.social -= 3;
+        } else {
+            updateTextInBox("Spent that time studying instead of attending the workshop. +2 intelligence");
+            player.intelligence += 2;
+        }
+    }
+
+    document.removeEventListener('keydown', handleAKPChallenge);
+    document.addEventListener('keydown', afterChallenge);
+}
+
+function afterChallenge(event) {
+    if (event.keyCode == 32) {
+        document.removeEventListener('keydown', afterChallenge);
+        gameplay();
+        return;
     }
 }
 
 function finishedGame() {
-  year--;
-  semester = 4;
+  year = 4;
+  semester = 2;
   week = 8;
-  youLost("Congratulations! You graduated Berkeley! Go Bears!")
+  endText("Congratulations! You graduated Berkeley! Go Bears!")
 }
 
 function options() {
@@ -461,7 +554,6 @@ function lostPage() {
   // "You develop depression. You should've gone to UCLA"
   var lostText;
   document.removeEventListener('keydown', nextWeek);
-  document.addEventListener('keydown', restartGame);
   if (player.happiness <= 0) {
     endText("You developed crippling depression. Should've gone to UCLA.");
     // lostText.x = canvas.width / 2 - lostText.getMeasuredWidth() / 2;
@@ -602,4 +694,5 @@ function endText(stringToShow) {
   next.x = 385 - next.getMeasuredWidth()/2;
   next.y = 388 + 145;
   stage.addChild(next);
+  document.addEventListener('keydown', restartGame);
 }
