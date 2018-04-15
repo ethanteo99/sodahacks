@@ -84,8 +84,8 @@ function createMenu() {
     rec1.graphics.setStrokeStyle(0, "round");
     rec1.graphics.beginStroke("rgba(0,50,98,.8)").beginFill("rgba(0,50,98,.8)").drawRect(145, 100, 710, 200);
 
-    var welcome = new createjs.Text('The Berkeley Experience', '70px VT323', white);
-    welcome.x = canvas.width/2 - welcome.getMeasuredWidth()/2;
+    var welcome = new createjs.Text('Berkeley VR', '70px VT323', white);
+    welcome.x = canvas.width/2 - 150;
     welcome.y = 120;
 
 
@@ -141,7 +141,6 @@ function showInstructions(event) {
 
 function handleChoosePlayerMenuKey(event) {
 
-
     let name, description;
     const confirm = new createjs.Text("Do you want to choose this player? (y/n)", "30px VT323", white);
 
@@ -193,7 +192,7 @@ function proceedWithPlayer(event) {
         bideo();
         initPlayer(playerNum);
     } else if (event.keyCode == 78) {
-        handleChoosePlayerMenuKey();
+        choosePlayer();
     }
 }
 
@@ -406,12 +405,52 @@ function nextWeek(event) {
             year++;
             semester = 1;
         }
-        if (Math.random() > 0.8) {
+
+        if (Math.random() > 0.85) {
             challenge();
+            return;
+        } else if (Math.random() > 0.7) {
+            randomEvent();
             return;
         }
         gameplay();
     }
+}
+
+function randomEvent() {
+    hud();
+    console.log("event triggered");
+    var random = Math.random();
+
+    if (random > 0.9) {
+        updateTextInBox("You form a study group with your friends. +3 intelligence");
+        player.intelligence += 3;
+    } else if (random > 0.8) {
+        updateTextInBox("A fire alarm wakes you up at 5am. -3% happiness");
+        player.happiness -= 3;
+    } else if (random > 0.7) {
+        updateTextInBox("You throw up on your friend\'s bed after going to a party. -3 social");
+        player.social -= 3;
+    } else if (random > 0.6) {
+        updateTextInBox("You get tackled by a homeless person. -3% happiness");
+        player.happiness -= 3;
+    } else if (random > 0.5) {
+        updateTextInBox("You can\'t study because you can\'t find a seat in Moffitt. -3 intelligence");
+        player.intelligence -= 3;
+    } else if (random > 0.4) {
+        updateTextInBox("Cal finally wins a football game. You go to sleep happy. +3 sleep");
+        player.sleep += 3;
+    } else if (random > 0.3) {
+        updateTextInBox("It's 2am. You forgot your key and are locked out of your room. -3 sleep");
+        player.sleep -= 3;
+    } else if (random > 0.2) {
+        updateTextInBox("You posted a meme and it got over 2000 likes. +3 social");
+        player.social += 3;
+    } else if (random > 0.1) {
+        updateTextInBox("There is a protest for veganism and you are triggered. -3% happiness");
+        player.happiness -= 3;
+    }
+    document.addEventListener('keydown', afterChallenge);
 }
 
 function challenge() {
@@ -421,17 +460,21 @@ function challenge() {
     let choice1;
     let choice2;
     var random = Math.random();
-    console.log(random);
-    if (random > 0.7) {
+    if (random > 0.67) {
         prompt = new createjs.Text("Someone from Alpha Kappa Psi flyers you on Sproul. What do you do?", "25px VT323", white);
         choice1 = new createjs.Text("(1) Attend their event", "25px VT323", white);
         choice2 = new createjs.Text("(2) Walk straight past them", "25px VT323", white);
         document.addEventListener('keydown', handleAKPChallenge);
-    } else {
+    } else if (random > 0.33) {
         prompt = new createjs.Text("It seems that you have been sexiled. What do you do?", "25px VT323", white);
         choice1 = new createjs.Text("(1) Sleep in the hallway", "25px VT323", white);
         choice2 = new createjs.Text("(2) Knock on the door angrily", "25px VT323", white);
         document.addEventListener('keydown', handleSexileChallenge);
+    } else {
+        prompt = new createjs.Text("Someone asks you out on a date. What do you do?", "25px VT323", white);
+        choice1 = new createjs.Text("(1) Say yes", "25px VT323", white);
+        choice2 = new createjs.Text("(2) Say no", "25px VT323", white);
+        document.addEventListener('keydown', handleDateChallenge);
     }
 
     prompt.x = 50;
@@ -446,6 +489,31 @@ function challenge() {
     stage.addChild(prompt, choice1, choice2);
 }
 
+function handleDateChallenge(event) {
+    var random = Math.random();
+    if (event.keyCode == 49) {
+        if (random > 0.5) {
+            updateTextInBox("You have a lot of fun. +5 social");
+            player.social += 5;
+        } else {
+            updateTextInBox("You have entered a toxic relationship. -5% happiness");
+            player.happiness -= 5;
+        }
+        document.removeEventListener('keydown', handleDateChallenge);
+        document.addEventListener('keydown', afterChallenge);
+    } else if (event.keyCode == 50) {
+        if (random > 0.2) {
+            updateTextInBox("Missed out on the love of your life. -5% happiness");
+            player.happiness -= 5;
+        } else {
+            updateTextInBox("You sleep well because dating gives you anxiety. +3 sleep");
+            player.sleep += 3;
+        }
+        document.removeEventListener('keydown', handleDateChallenge);
+        document.addEventListener('keydown', afterChallenge);
+    }
+}
+
 function handleSexileChallenge(event) {
     var random = Math.random();
     if (event.keyCode == 49) {
@@ -456,6 +524,8 @@ function handleSexileChallenge(event) {
             updateTextInBox("You end up staying up all night chatting with a friend about roommate problems. +2 social");
             player.social += 2;
         }
+        document.removeEventListener('keydown', handleSexileChallenge);
+        document.addEventListener('keydown', afterChallenge);
     } else if (event.keyCode == 50) {
         if (random > 0.2) {
             updateTextInBox("Your roommate is furious. -3 social");
@@ -464,14 +534,12 @@ function handleSexileChallenge(event) {
             updateTextInBox("Your roommate is understanding. +1 social");
             player.social += 1;
         }
-
+        document.removeEventListener('keydown', handleSexileChallenge);
+        document.addEventListener('keydown', afterChallenge);
     }
-
-    document.removeEventListener('keydown', handleSexileChallenge);
-    document.addEventListener('keydown', afterChallenge);
 }
 
-function handleAKPChallenge() {
+function handleAKPChallenge(event) {
     var random = Math.random();
     if (event.keyCode == 49) {
         if (random > 0.2) {
@@ -484,6 +552,8 @@ function handleAKPChallenge() {
             updateTextInBox("You learn how to implement machine learning. +5 intelligence");
             player.intelligence += 5;
         }
+        document.removeEventListener('keydown', handleAKPChallenge);
+        document.addEventListener('keydown', afterChallenge);
     } else if (event.keyCode == 50) {
         if (random > 0.5) {
             updateTextInBox("Turns out the person flyering was your friend. They are now angry at you for ignoring them. -3 social");
@@ -492,10 +562,9 @@ function handleAKPChallenge() {
             updateTextInBox("Spent that time studying instead of attending the workshop. +2 intelligence");
             player.intelligence += 2;
         }
+        document.removeEventListener('keydown', handleAKPChallenge);
+        document.addEventListener('keydown', afterChallenge);
     }
-
-    document.removeEventListener('keydown', handleAKPChallenge);
-    document.addEventListener('keydown', afterChallenge);
 }
 
 function afterChallenge(event) {
