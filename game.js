@@ -19,19 +19,18 @@ var player = {
   happiness: 100,
 }
 
-var intelligence;
-var social;
-var energy;
-var GPA;
-var happiness;
-
 function init() {
   console.log("hello" + player.intelligence);
   canvas = document.getElementById("demoCanvas");
   stage = new createjs.Stage(canvas);
 
+  createjs.Ticker.on("tick", stage);
   stage.update();
   createMenu();
+}
+
+function tick(event) {
+    stage.update(event);
 }
 
 function handleClick(event) {
@@ -285,6 +284,16 @@ function initStatChanges(focus) {
     player.intelligence = player.intelligence - minusRandomScalar;
     player.social = player.social + scalar;
   }
+
+  updateHappiness();
+  if (happiness <= 0) {
+    console.log("You lose please quit.");
+  }
+
+}
+
+function updateHappiness() {
+  player.happiness = player.happiness + (((.6 * social) + (.4 * sleep) - 80) / 100) * player.happiness;
 }
 
 function hud(){
@@ -341,6 +350,7 @@ function hud(){
     cha.x = 870 - 144/2;
     cha.y = 50;
     cha.scale = .5;
+
     cha.image.onload = function() {
     stage.update();
     }
