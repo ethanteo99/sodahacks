@@ -19,12 +19,6 @@ var player = {
   happiness: 100,
 }
 
-var intelligence;
-var social;
-var energy;
-var GPA;
-var happiness;
-
 function init() {
   console.log("hello" + player.intelligence);
   canvas = document.getElementById("demoCanvas");
@@ -293,6 +287,15 @@ function initStatChanges(focus) {
 
   }
 
+  updateHappiness();
+  if (happiness <= 0) {
+    console.log("You lose please quit.");
+  }
+
+}
+
+function updateHappiness() {
+  player.happiness = player.happiness + (((.6 * social) + (.4 * sleep) - 80) / 100) * player.happiness;
 }
 
 function hud(){
