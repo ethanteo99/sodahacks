@@ -22,7 +22,6 @@ var player = {
 }
 
 function init() {
-  console.log("hello" + player.intelligence);
   canvas = document.getElementById("demoCanvas");
   stage = new createjs.Stage(canvas);
 
@@ -181,16 +180,20 @@ function landmarkReached() {
   } else {
     difficulty = 75;
   }
+
   var change = ((player.intelligence*0.7 + player.sleep*0.3 - difficulty)/100)*player.GPA;
   player.GPA = player.GPA + change;
-  if(change > 0) {
-    updateTextInBox("You did well on your finals!" + " Your new GPA is: " + player.GPA);
-    if(player.GPA > 4) {
-      player.GPA = 4;
+    if(change > 0.1) {
+        updateTextInBox("You did well on your finals!" + " Your new GPA is: " + player.GPA);
+        if(player.GPA > 4) {
+          player.GPA = 4;
+        }
+    } else if (change < -0.1) {
+        updateTextInBox("You did poorly on your finals." + " Your new GPA is: " + player.GPA);
+    } else {
+        updateTextInBox("You did okay on your finals." + " Your new GPA is: " + player.GPA);
     }
-  } else if (change < 0) {
-    updateTextInBox("You did poorly on your finals." + " Your new GPA is: " + player.GPA);
-  }
+  document.addEventListener('keydown', nextWeek);
 }
 
 function minusRandomScalar() {
@@ -268,6 +271,7 @@ function nextWeek(event) {
             semester++;
             week = 1;
             landmarkReached();
+            return;
         }
         if (semester == 3) {
             year++;
