@@ -1,0 +1,94 @@
+
+
+#con{
+	position: relative;
+	width: 1000px;
+	height: 600px;
+  	border: 8px solid #000000;
+  	left: 50%;
+  	top: 47%;
+  	transform: translate(-50%, -50%);
+}
+
+#demoCanvas{
+	z-index: 0;
+	position: absolute;
+	
+}
+
+#sather{
+	background-image: url("img/sather.png");
+	position: absolute;
+	background-size:cover;
+	width: 1000px;
+	height: 600px;
+	z-index: 20;
+	display: none;
+}
+
+#football{
+	background-image: url("img/football.png");
+	position: absolute;
+	background-size:cover;
+	width: 1000px;
+	height: 600px;
+	z-index: 20;
+	display: none;
+}
+
+#soda{
+	background-image: url("img/soda.png");
+	position: absolute;
+	background-size:cover;
+	width: 1000px;
+	height: 600px;
+	z-index: 20;
+	display: none;
+}
+
+#black{
+	position: absolute;
+	background-color: #000000;
+	width: 1000px;
+	height: 600px;
+	z-index: 19;
+	display: none;
+}
+
+#moffit{
+	position: absolute;
+	background-image: url("img/moffit.png");
+	background-size:cover;
+	width: 1000px;
+	height: 600px;
+	z-index: -1;
+	display: none;
+}
+
+#bed{
+	position: absolute;
+	background-image: url("img/bed.png");
+	background-size:cover;
+	width: 1000px;
+	height: 600px;
+	z-index: -1;
+	display: none;
+}
+
+#party{
+	position: absolute;
+	background-image: url("img/party.png");
+	background-size:cover;
+	width: 1000px;
+	height: 600px;
+	z-index: -1;
+	display: none;
+}
+
+
+
+
+
+body{
+	background-color: #4D9DE0;
+}

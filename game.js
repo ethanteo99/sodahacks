@@ -25,6 +25,7 @@ function init() {
   canvas = document.getElementById("demoCanvas");
   stage = new createjs.Stage(canvas);
   createjs.Ticker.on("tick", stage);
+  createjs.Ticker.framerate = 40;
   createMenu();
 }
 
@@ -41,23 +42,26 @@ function choosePlayer() {
   document.addEventListener('keydown', handleChoosePlayerMenuKey);
   console.log("choose player!");
 
-  var title = new createjs.Text("Choose Player", "70px VT323", textColor);
+  var background = new createjs.Shape();
+  background.graphics.beginFill("rgb(0,50,98)").drawRect(0,0,1000,600);
+
+  var title = new createjs.Text("Choose Player", "70px VT323", white);
   title.x = canvas.width / 2 - title.getMeasuredWidth() / 2;
   title.y = canvas.height / 15 * 4;
 
-  var player1 = new createjs.Text("Player 1 (a)", "50px VT323", textColor);
+  var player1 = new createjs.Text("Chad (a)", "50px VT323", white);
   player1.x = canvas.width / 2 - player1.getMeasuredWidth() / 2;
   player1.y = (canvas.height / 15) * 8;
 
-  var player2 = new createjs.Text("Player 2 (b)", "50px VT323", textColor);
+  var player2 = new createjs.Text("EECS (b)", "50px VT323", white);
   player2.x = canvas.width / 2 - player2.getMeasuredWidth() / 2;
   player2.y = (canvas.height / 15) * 10;
 
-  var player3 = new createjs.Text("Player 3 (c)", "50px VT323", textColor);
+  var player3 = new createjs.Text("Media Studies (c)", "50px VT323", white);
   player3.x = canvas.width / 2 - player3.getMeasuredWidth() / 2;
   player3.y = (canvas.height / 15) * 12;
 
-  stage.addChild(title, player1, player2, player3);
+  stage.addChild(background, title, player1, player2, player3);
 }
 
 function createMenu() {
@@ -76,7 +80,7 @@ function createMenu() {
     rec1.graphics.setStrokeStyle(0, "round");
     rec1.graphics.beginStroke("rgba(0,50,98,.8)").beginFill("rgba(0,50,98,.8)").drawRect(145, 100, 710, 200);
 
-    var welcome = new createjs.Text('Welcome to Cal!', '100px VT323', white);
+    var welcome = new createjs.Text('Berkeley VR', '100px VT323', white);
     welcome.x = canvas.width/2 - welcome.getMeasuredWidth()/2;
     welcome.y = 100;
 
@@ -96,6 +100,8 @@ function createMenu() {
 }
 
 
+
+
 function handleStartMenuKey(event) {
     if (event.keyCode == 83) {
         document.removeEventListener('keydown', handleStartMenuKey);
@@ -109,66 +115,115 @@ function handleStartMenuKey(event) {
 
 function showInstructions(event) {
     console.log("works");
-    var show = new createjs.Text('Instructions', font);
-    show.x = 200;
-    show.y = 300;
 
-    stage.addChild(show);
+    var menu = new createjs.Container();
+    menu.x = 0;
+    menu.y = 0;
+    menu.setBounds(0, 0, width, height);
+
+    var rec2 = new createjs.Shape();
+    rec2.graphics.setStrokeStyle(0, "round");
+    rec2.graphics.beginStroke("rgba(0,50,98,.8)").beginFill("rgba(0,50,98,.8)").drawRect(145, 375, 710, 150);
+
+    var show = "Welcome to Berkeley! Two rules: GPA greater than 2 and avoid depression!"
+
+    var text1 = new createjs.Text(show.slice(0, 31), '30px VT323', white);
+    text1.x = canvas.width / 2 - text1.getMeasuredWidth() / 2;
+    text1.y = (canvas.height / 15) * 10;
+
+    var text2 = new createjs.Text(show.slice(31), '30px VT323', white);
+    text2.x = canvas.width / 2 - text2.getMeasuredWidth() / 2;
+    text2.y = (canvas.height / 15) * 11;
+
+
+
+    menu.addChild(rec2);
+    menu.addChild(text1, text2);
+    stage.addChild(menu);
+    stage.update();
 }
 
 function handleChoosePlayerMenuKey(event) {
     let name, description;
-    const confirm = new createjs.Text("Do you want to choose this player? (y/n)", "30px VT323", textColor);
+    const confirm = new createjs.Text("Do you want to choose this player? (y/n)", "30px VT323", white);
     confirm.x = canvas.width / 2 - confirm.getMeasuredWidth() / 2;
     confirm.y = (canvas.height / 15) * 12;
 
+
+    var background = new createjs.Shape();
+    background.graphics.beginFill("rgb(0,50,98)").drawRect(0,0,1000,600);
+
     if (event.keyCode == 65) {
         stage.removeAllChildren();
-        name = new createjs.Text("Chad", "50px VT323", textColor);
+        name = new createjs.Text("Chad", "50px VT323", white);
         playerNum = 1;
     } else if (event.keyCode == 66) {
         stage.removeAllChildren();
-        name = new createjs.Text("EECS", "50px VT323", textColor);
+        name = new createjs.Text("EECS", "50px VT323", white);
         playerNum = 2;
     } else if (event.keyCode == 67) {
         stage.removeAllChildren();
-        name = new createjs.Text("Media Studies", "50px VT323", textColor);
+        name = new createjs.Text("Media Studies", "50px VT323", white);
         playerNum = 3;
     }
-    description = new createjs.Text("Enter Description", "40px VT323", textColor);
+    description = new createjs.Text("Enter Description", "40px VT323", white);
     description.x = canvas.width / 2 - description.getMeasuredWidth() / 2;
     description.y = (canvas.height / 15) * 8;
 
     name.x = canvas.width / 2 - name.getMeasuredWidth() / 2;
     name.y = (canvas.height / 15) * 4;
 
-    stage.addChild(name, confirm, description);
+    stage.addChild(background, name, confirm, description);
     document.removeEventListener('keydown', handleChoosePlayerMenuKey);
     document.addEventListener('keydown', proceedWithPlayer);
 }
 
 function proceedWithPlayer(event) {
     if (event.keyCode == 89) {
+        bideo();
         initPlayer(playerNum);
     } else if (event.keyCode == 78) {
         handleChoosePlayerMenuKey();
     }
 }
 
+function bideo(){
+    $("#sather").fadeIn();
+    $("#black").show();
+    setTimeout(function(){ $("#sather").fadeOut();
+      $("#football").fadeIn();
+    }, 1500);
+
+    setTimeout(function(){ $("#football").fadeOut();
+      $("#soda").fadeIn();
+    }, 3000);
+
+    setTimeout(function(){ $("#football").fadeOut();
+      $("#black").css("z-index", "-2");
+      $("#soda").fadeOut();
+
+    }, 4500);
+
+
+
+
+
+}
+
 function initPlayer(playerNum) {
   console.log("initializing player");
   if(playerNum == 1) {
-    player.name = "chad";
+    player.name = "Chad";
     player.intelligence = 55;
     player.social = 80;
     player.sleep = 65;
   } else if(playerNum == 2) {
-    player.name = "eecs";
+    player.name = "EECS";
     player.intelligence = 80;
     player.social = 60;
     player.sleep = 60;
   } else if(playerNum == 3) {
-    player.name = "media studies";
+    player.name = "Media Studies";
     player.intelligence = 60;
     player.social = 70;
     player.sleep = 70;
@@ -211,6 +266,9 @@ function minusRandomScalar() {
 function initStatChanges(focus) {
   var scalar = Math.floor(Math.random() * 6 + 1);
   if (focus == 1) {
+    $("#bed").fadeIn();
+    $("#moffit").fadeOut();
+    $("#party").fadeOut();
 
     if (scalar == 1 || scalar == 2) {
       updateTextInBox("Despite trying your best, you had a rough week of sleep: +" + scalar + " sleep");
@@ -226,6 +284,10 @@ function initStatChanges(focus) {
 
   if (focus == 2) {
 
+    $("#moffit").fadeIn();
+    $("#party").fadeOut();
+    $("#bed").fadeOut();
+
     if (scalar == 1 || scalar == 2) {
       updateTextInBox("Even after studying, the concepts are still fuzzy in your brain: +" + scalar + " intelligence");
     } else {
@@ -238,6 +300,10 @@ function initStatChanges(focus) {
   }
 
   if (focus == 3) {
+
+    $("#moffit").fadeOut();
+    $("#party").fadeIn();
+    $("#bed").fadeOut();
     if (scalar == 1 || scalar == 2) {
       updateTextInBox("Your friends are busy this week, but they manage to squeeze in a little time for you +" + scalar + " social");
     }
@@ -250,7 +316,7 @@ function initStatChanges(focus) {
   }
 
   updateHappiness();
-  if (player.happiness <= 0) {
+  if (player.happiness <= 0 || player.GPA < 2) {
     console.log("You lose please quit.");
     lostPage();
   } else {
@@ -355,8 +421,7 @@ function restartGame(event) {
 
 function hud(){
     stage.removeAllChildren();
-    var background = new createjs.Shape();
-    background.graphics.beginFill("#4C5B5C").drawRect(0,0,1000,600);
+
 
     var rec1 = new createjs.Shape();
     rec1.graphics.setStrokeStyle(8, "round");
@@ -407,13 +472,13 @@ function hud(){
     var path;
 
     if (player.happiness > 70){
-      path = "img/"+player.name+"hap.png";
+      path = "img/"+playerNum+"hap.png";
     }
     else if (player.happiness > 40){
-      path = "img/"+player.name+"meh.png";
+      path = "img/"+playerNum+"meh.png";
     }
     else{
-      path = "img/"+player.name+"sad.png";
+      path = "img/"+playerNum+"sad.png";
     }
 
     var cha = new createjs.Bitmap(path);
@@ -421,7 +486,6 @@ function hud(){
     cha.y = 50;
     cha.scale = .5;
 
-    stage.addChild(background);
     stage.addChild(rec1, rec2, rec3);
     stage.addChild(date);
     stage.addChild(gpatext, haptext, atrtext, inttext, soctext, sletext, nametext);
