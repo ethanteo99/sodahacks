@@ -25,6 +25,7 @@ function init() {
   canvas = document.getElementById("demoCanvas");
   stage = new createjs.Stage(canvas);
   createjs.Ticker.on("tick", stage);
+  createjs.Ticker.framerate = 40;
   createMenu();
 }
 
