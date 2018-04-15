@@ -2,13 +2,15 @@ var canvas;
 var stage;
 var textColor = "#000000";
 var buttonColor = "#0033cc";
-
 var black = "#0E1111";
 var white = "#EEF0F0";
 var playerNum = 0;
 const width = 1000;
 const height = 600;
 const font = '30px VT323';
+var week = 1;
+var semester = 1;
+var year = 1;
 
 var player = {
   name: "",
@@ -175,12 +177,12 @@ function landmarkReached() {
   if (player.name == "Chad") {
     difficulty = 80;
   } else if (player.name == "EECS") {
-    difficulty = 90;
+    difficulty = 85;
   } else {
-    difficulty = 70;
+    difficulty = 75;
   }
   var change = ((player.intelligence*0.7 + player.sleep*0.3 - difficulty)/100)*player.GPA;
-  player.GPA = player.GPA - change;
+  player.GPA = player.GPA + change;
   if(change > 0) {
     updateTextInBox("You did well on your finals!" + " Your new GPA is: " + player.GPA);
     if(player.GPA > 4) {
@@ -247,7 +249,7 @@ function initStatChanges(focus) {
 }
 
 function updateHappiness() {
-  player.happiness = Math.floor(player.happiness + (((.6 * player.social) + (.4 * player.sleep) - 75) / 100) * player.happiness);
+  player.happiness = Math.floor(player.happiness + (((.6 * player.social) + (.4 * player.sleep) - 65) / 100) * player.happiness);
   if (player.happiness > 100) {
     player.happiness = 100;
   }
@@ -261,6 +263,16 @@ function gameplay() {
 function nextWeek(event) {
     if (event.keyCode == 32) {
         document.removeEventListener('keydown', nextWeek);
+        week++;
+        if (week == 9) {
+            semester++;
+            week = 1;
+            landmarkReached();
+        }
+        if (semester == 3) {
+            year++;
+            semester = 1;
+        }
         gameplay();
     }
 }
@@ -318,7 +330,7 @@ function hud(){
     rec3.graphics.setStrokeStyle(8, "round");
     rec3.graphics.beginStroke(white).beginFill(black).drawRect(770, 370, 200, 200);
 
-    var date = new createjs.Text('Year 1, Semester 1', '40px VT323', white);
+    var date = new createjs.Text('Year ' + year + ', Semester ' + semester + ': Week ' + week, '40px VT323', white);
     date.x = 385 - date.getMeasuredWidth()/2;
     date.y = 388;
 
