@@ -25,7 +25,6 @@ function init() {
   stage = new createjs.Stage(canvas);
 
   createjs.Ticker.on("tick", stage);
-  stage.update();
   createMenu();
 }
 
@@ -59,7 +58,6 @@ function choosePlayer() {
   player3.y = (canvas.height / 15) * 12;
 
   stage.addChild(title, player1, player2, player3);
-  stage.update();
 }
 
 function createMenu() {
@@ -86,7 +84,6 @@ function createMenu() {
 
     menu.addChild(welcome, start, instructions);
     stage.addChild(menu);
-    stage.update();
 }
 
 
@@ -108,7 +105,6 @@ function showInstructions(event) {
     show.y = 300;
 
     stage.addChild(show);
-    stage.update();
 }
 
 function handleChoosePlayerMenuKey(event) {
@@ -138,7 +134,6 @@ function handleChoosePlayerMenuKey(event) {
     name.y = (canvas.height / 15) * 4;
 
     stage.addChild(name, confirm, description);
-    stage.update();
     document.removeEventListener('keydown', handleChoosePlayerMenuKey);
     document.addEventListener('keydown', proceedWithPlayer);
 }
@@ -150,7 +145,6 @@ function proceedWithPlayer(event) {
         handleChoosePlayerMenuKey();
     }
 }
-
 
 function initPlayer(playerNum) {
   console.log("initializing player");
@@ -218,7 +212,6 @@ function endWeek() {
   party.y = (canvas.height / 15) * 12;
 
   stage.addChild(title, sleep, study, party);
-  stage.update();
 }
 
 function handleChooseFocus(event) {
@@ -287,7 +280,7 @@ function initStatChanges(focus) {
 
   updateHappiness();
   if (happiness <= 0) {
-    console.log("You lose please quit.");
+    updateTextInBox("You lose please quit.");
   }
 
 }
@@ -351,16 +344,11 @@ function hud(){
     cha.y = 50;
     cha.scale = .5;
 
-    cha.image.onload = function() {
-    stage.update();
-    }
-
     stage.addChild(background);
     stage.addChild(rec1, rec2, rec3);
     stage.addChild(date);
     stage.addChild(gpatext, haptext, atrtext, inttext, soctext, sletext, nametext);
     stage.addChild(cha);
-    stage.update();
 }
 
 function updateTextInBox(stringToShow) {
@@ -381,5 +369,4 @@ function updateTextInBox(stringToShow) {
     stage.addChild(text1);
     stage.addChild(text1);
   }
-  stage.update();
 }
