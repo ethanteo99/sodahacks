@@ -23,7 +23,6 @@ function init() {
   console.log("hello" + player.intelligence);
   canvas = document.getElementById("demoCanvas");
   stage = new createjs.Stage(canvas);
-
   createjs.Ticker.on("tick", stage);
   createMenu();
 }
@@ -68,21 +67,30 @@ function createMenu() {
     menu.y = 0;
     menu.setBounds(0, 0, width, height);
 
-    var welcome = new createjs.Text('Welcome to Cal!', '50px VT323', 'blue');
+    var back = new createjs.Bitmap("img/welcome.png");
+    back.x = 0;
+    back.y = 0;
+
+    var rec1 = new createjs.Shape();
+    rec1.graphics.setStrokeStyle(0, "round");
+    rec1.graphics.beginStroke("rgba(0,50,98,.8)").beginFill("rgba(0,50,98,.8)").drawRect(145, 100, 710, 200);
+
+    var welcome = new createjs.Text('Welcome to Cal!', '100px VT323', white);
     welcome.x = canvas.width/2 - welcome.getMeasuredWidth()/2;
     welcome.y = 100;
 
-    var start = new createjs.Text('Start Game (S)', font);
+
+    var start = new createjs.Text('Start Game (S)', '40px VT323', white);
     start.x = canvas.width/2 - start.getMeasuredWidth()/2;
     start.y = 200;
 
     start.addEventListener("click", handleClick);
 
-    var instructions = new createjs.Text('Instructions (I)', font);
+    var instructions = new createjs.Text('Instructions (I)', '40px VT323', white);
     instructions.x = canvas.width/2 - instructions.getMeasuredWidth()/2;
     instructions.y = 250;
 
-    menu.addChild(welcome, start, instructions);
+    menu.addChild(back, rec1, welcome, start, instructions);
     stage.addChild(menu);
 }
 
@@ -339,7 +347,20 @@ function hud(){
     sletext.x = 870 - sletext.getMeasuredWidth()/2;
     sletext.y = 500 + sletext.getMeasuredHeight();
 
-    var cha = new createjs.Bitmap("img/dogelet.png");
+
+    var path;
+
+    if (player.happiness > 70){
+      path = "img/"+player.name+"hap.png";
+    }
+    else if (player.happiness > 40){
+      path = "img/"+player.name+"meh.png";
+    }
+    else{
+      path = "img/"+player.name+"sad.png";
+    }
+
+    var cha = new createjs.Bitmap(path);
     cha.x = 870 - 144/2;
     cha.y = 50;
     cha.scale = .5;
