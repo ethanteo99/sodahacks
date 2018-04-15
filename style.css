@@ -1,7 +1,14 @@
-#demoCanvas{
-  
-  border: 1px solid #000000;
-  padding: 0;
-  margin: auto;
-  display: block;
+
+
+#con{
+	position: relative;
+	width: 1000px;
+	height: 600px;
+  	border: 8px solid #000000;
+  	left: 50%;
+  	top: 47%;
+  	transform: translate(-50%, -50%);
+}
+body{
+	background-color: #4D9DE0;
 }

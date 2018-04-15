@@ -41,23 +41,26 @@ function choosePlayer() {
   document.addEventListener('keydown', handleChoosePlayerMenuKey);
   console.log("choose player!");
 
-  var title = new createjs.Text("Choose Player", "70px VT323", textColor);
+  var background = new createjs.Shape();
+  background.graphics.beginFill("rgb(0,50,98)").drawRect(0,0,1000,600);
+
+  var title = new createjs.Text("Choose Player", "70px VT323", white);
   title.x = canvas.width / 2 - title.getMeasuredWidth() / 2;
   title.y = canvas.height / 15 * 4;
 
-  var player1 = new createjs.Text("Chad (a)", "50px VT323", textColor);
+  var player1 = new createjs.Text("Chad (a)", "50px VT323", white);
   player1.x = canvas.width / 2 - player1.getMeasuredWidth() / 2;
   player1.y = (canvas.height / 15) * 8;
 
-  var player2 = new createjs.Text("EECS (b)", "50px VT323", textColor);
+  var player2 = new createjs.Text("EECS (b)", "50px VT323", white);
   player2.x = canvas.width / 2 - player2.getMeasuredWidth() / 2;
   player2.y = (canvas.height / 15) * 10;
 
-  var player3 = new createjs.Text("Media Studies (c)", "50px VT323", textColor);
+  var player3 = new createjs.Text("Media Studies (c)", "50px VT323", white);
   player3.x = canvas.width / 2 - player3.getMeasuredWidth() / 2;
   player3.y = (canvas.height / 15) * 12;
 
-  stage.addChild(title, player1, player2, player3);
+  stage.addChild(background, title, player1, player2, player3);
 }
 
 function createMenu() {
@@ -129,6 +132,8 @@ function showInstructions(event) {
     text2.x = canvas.width / 2 - text2.getMeasuredWidth() / 2;
     text2.y = (canvas.height / 15) * 11;
 
+
+
     menu.addChild(rec2);
     menu.addChild(text1, text2);
     stage.addChild(menu);
@@ -137,31 +142,35 @@ function showInstructions(event) {
 
 function handleChoosePlayerMenuKey(event) {
     let name, description;
-    const confirm = new createjs.Text("Do you want to choose this player? (y/n)", "30px VT323", textColor);
+    const confirm = new createjs.Text("Do you want to choose this player? (y/n)", "30px VT323", white);
     confirm.x = canvas.width / 2 - confirm.getMeasuredWidth() / 2;
     confirm.y = (canvas.height / 15) * 12;
 
+    
+    var background = new createjs.Shape();
+    background.graphics.beginFill("rgb(0,50,98)").drawRect(0,0,1000,600);
+
     if (event.keyCode == 65) {
         stage.removeAllChildren();
-        name = new createjs.Text("Chad", "50px VT323", textColor);
+        name = new createjs.Text("Chad", "50px VT323", white);
         playerNum = 1;
     } else if (event.keyCode == 66) {
         stage.removeAllChildren();
-        name = new createjs.Text("EECS", "50px VT323", textColor);
+        name = new createjs.Text("EECS", "50px VT323", white);
         playerNum = 2;
     } else if (event.keyCode == 67) {
         stage.removeAllChildren();
-        name = new createjs.Text("Media Studies", "50px VT323", textColor);
+        name = new createjs.Text("Media Studies", "50px VT323", white);
         playerNum = 3;
     }
-    description = new createjs.Text("Enter Description", "40px VT323", textColor);
+    description = new createjs.Text("Enter Description", "40px VT323", white);
     description.x = canvas.width / 2 - description.getMeasuredWidth() / 2;
     description.y = (canvas.height / 15) * 8;
 
     name.x = canvas.width / 2 - name.getMeasuredWidth() / 2;
     name.y = (canvas.height / 15) * 4;
 
-    stage.addChild(name, confirm, description);
+    stage.addChild(background, name, confirm, description);
     document.removeEventListener('keydown', handleChoosePlayerMenuKey);
     document.addEventListener('keydown', proceedWithPlayer);
 }
