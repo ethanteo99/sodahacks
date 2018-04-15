@@ -29,7 +29,7 @@ function init() {
   console.log("hello" + player.intelligence);
   canvas = document.getElementById("demoCanvas");
   stage = new createjs.Stage(canvas);
-  
+
   stage.update();
   createMenu();
 }
@@ -201,6 +201,100 @@ function landmarkReached() {
   console.log("Your new GPA is: " + player.GPA);
 }
 
+function endWeek() {
+  stage.removeAllChildren();
+  document.addEventListener('keydown', handleChooseFocus);
+  console.log("choose player!");
+
+  var title = new createjs.Text("Choose focus for next week", "70px VT323", textColor);
+  title.x = canvas.width / 2 - title.getMeasuredWidth() / 2;
+  title.y = title.y = (canvas.height / 15) * 4;
+
+  var sleep = new createjs.Text("Sleep (a)", "50px VT323", textColor);
+  sleep.x = canvas.width / 2 - sleep.getMeasuredWidth() / 2;
+  sleep.y = (canvas.height / 15) * 8;
+
+  var study = new createjs.Text("Study (b)", "50px VT323", textColor);
+  study.x = canvas.width / 2 - study.getMeasuredWidth() / 2;
+  study.y = (canvas.height / 15) * 10;
+
+  var party = new createjs.Text("Party (c)", "50px VT323", textColor);
+  party.x = canvas.width / 2 - party.getMeasuredWidth() / 2;
+  party.y = (canvas.height / 15) * 12;
+
+  stage.addChild(title, sleep, study, party);
+  stage.update();
+}
+
+function handleChooseFocus(event) {
+  var focus = 0;
+  if (event.keyCode == 65) {
+    console.log("Let's focus on sleeping!");
+    focus = 1;
+  } else if (event.keyCode == 66) {
+    console.log("Let's focus on studying!");
+    focus = 2;
+  } else if (event.keyCode == 67) {
+    console.log("Let's focus on partying!");
+    focus = 3;
+  }
+
+  if(focus != 0) {
+    document.removeEventListener('keydown', handleChoosePlayerMenuKey);
+    initStatChanges(focus);
+  }
+}
+
+function minusRandomScalar() {
+  return Math.floor(Math.random() * 5);
+}
+
+function initStatChanges(focus) {
+  var scalar = Math.floor(Math.random() * 6 + 1);
+  if (focus == 1) {
+
+    if (scalar == 1 || scalar == 2) {
+      console.log("Despite trying your best, you had a rough week of sleep: +" + scalar);
+    }
+    else {
+      console.log("You sleep like a baby: +" + scalar);
+    }
+
+    player.sleep = player.sleep + scalar;
+    player.intelligence = player.intelligence - minusRandomScalar;
+    player.social = player.social - minusRandomScalar;
+  }
+
+  if (focus == 2) {
+
+    if (scalar == 1 || scalar == 2) {
+      console.log("Even after studying, the concepts are still fuzzy in your brain: +" + scalar);
+    } else {
+      console.log("You spend countless hours at Moffitt, shower less, and stink more: +" + scalar);
+    }
+
+    player.sleep = player.sleep - minusRandomScalar;
+    player.intelligence = player.intelligence + scalar;
+    player.social = player.social - minusRandomScalar;
+
+  }
+
+  if (focus == 3) {
+    if (scalar == 1 || scalar == 2) {
+      console.log("Your friends are busy this week, but they manage to squeeze in a little time for you +" + scalar);
+    }
+    else {
+      console.log("You go to a frat party, shotgun a beer, slap a wine bag, and win a game of beer pong +" + scalar);
+    }
+
+    player.sleep = player.sleep - minusRandomScalar;
+    player.intelligence = player.intelligence - minusRandomScalar;
+    player.social = player.social + scalar;
+
+  }
+
+}
+
 function hud(){
     stage.removeAllChildren();
     var background = new createjs.Shape();
@@ -208,15 +302,15 @@ function hud(){
 
     var rec1 = new createjs.Shape();
     rec1.graphics.setStrokeStyle(8, "round");
-    rec1.graphics.beginStroke(white).beginFill(black).drawRect(30, 370, 710, 200); 
+    rec1.graphics.beginStroke(white).beginFill(black).drawRect(30, 370, 710, 200);
 
     var rec2 = new createjs.Shape();
     rec2.graphics.setStrokeStyle(8, "round");
-    rec2.graphics.beginStroke(white).beginFill(black).drawRect(770, 22, 200, 318); 
+    rec2.graphics.beginStroke(white).beginFill(black).drawRect(770, 22, 200, 318);
 
     var rec3 = new createjs.Shape();
     rec3.graphics.setStrokeStyle(8, "round");
-    rec3.graphics.beginStroke(white).beginFill(black).drawRect(770, 370, 200, 200); 
+    rec3.graphics.beginStroke(white).beginFill(black).drawRect(770, 370, 200, 200);
 
     var date = new createjs.Text('Year 1, Semester 1', '30px VT323', white);
     date.x = 385 - date.getMeasuredWidth()/2;
@@ -251,10 +345,6 @@ function hud(){
     sletext.x = 870 - sletext.getMeasuredWidth()/2;
     sletext.y = 500 + sletext.getMeasuredHeight();
 
-   
-
-    
-
     var cha = new createjs.Bitmap("img/dogelet.png");
     cha.x = 870 - 144/2;
     cha.y = 50;
@@ -262,7 +352,6 @@ function hud(){
     cha.image.onload = function() {
     stage.update();
     }
- 
 
     stage.addChild(background);
     stage.addChild(rec1);
@@ -270,7 +359,7 @@ function hud(){
     stage.addChild(rec3);
     stage.addChild(date);
     stage.addChild(gpatext);
-    stage.addChild(haptext); 
+    stage.addChild(haptext);
     stage.addChild(atrtext);
     stage.addChild(inttext);
     stage.addChild(soctext);
@@ -278,6 +367,5 @@ function hud(){
     stage.addChild(nametext);
     stage.addChild(cha);
     stage.update();
-    
-    }
 
+    }
