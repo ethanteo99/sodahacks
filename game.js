@@ -2,13 +2,15 @@ var canvas;
 var stage;
 var textColor = "#000000";
 var buttonColor = "#0033cc";
-
 var black = "#0E1111";
 var white = "#EEF0F0";
 var playerNum = 0;
 const width = 1000;
 const height = 600;
 const font = '30px VT323';
+var week = 1;
+var semester = 1;
+var year = 1;
 
 var player = {
   name: "",
@@ -23,7 +25,6 @@ function init() {
   console.log("hello" + player.intelligence);
   canvas = document.getElementById("demoCanvas");
   stage = new createjs.Stage(canvas);
-
   createjs.Ticker.on("tick", stage);
   createMenu();
 }
@@ -68,21 +69,30 @@ function createMenu() {
     menu.y = 0;
     menu.setBounds(0, 0, width, height);
 
-    var welcome = new createjs.Text('Welcome to Cal!', '50px VT323', 'blue');
+    var back = new createjs.Bitmap("img/welcome.png");
+    back.x = 0;
+    back.y = 0;
+
+    var rec1 = new createjs.Shape();
+    rec1.graphics.setStrokeStyle(0, "round");
+    rec1.graphics.beginStroke("rgba(0,50,98,.8)").beginFill("rgba(0,50,98,.8)").drawRect(145, 100, 710, 200);
+
+    var welcome = new createjs.Text('Welcome to Cal!', '100px VT323', white);
     welcome.x = canvas.width/2 - welcome.getMeasuredWidth()/2;
     welcome.y = 100;
 
-    var start = new createjs.Text('Start Game (S)', font);
+
+    var start = new createjs.Text('Start Game (S)', '40px VT323', white);
     start.x = canvas.width/2 - start.getMeasuredWidth()/2;
     start.y = 200;
 
     start.addEventListener("click", handleClick);
 
-    var instructions = new createjs.Text('Instructions (I)', font);
+    var instructions = new createjs.Text('Instructions (I)', '40px VT323', white);
     instructions.x = canvas.width/2 - instructions.getMeasuredWidth()/2;
     instructions.y = 250;
 
-    menu.addChild(welcome, start, instructions);
+    menu.addChild(back, rec1, welcome, start, instructions);
     stage.addChild(menu);
 }
 
@@ -175,12 +185,12 @@ function landmarkReached() {
   if (player.name == "Chad") {
     difficulty = 80;
   } else if (player.name == "EECS") {
-    difficulty = 90;
+    difficulty = 85;
   } else {
-    difficulty = 70;
+    difficulty = 75;
   }
   var change = ((player.intelligence*0.7 + player.sleep*0.3 - difficulty)/100)*player.GPA;
-  player.GPA = player.GPA - change;
+  player.GPA = player.GPA + change;
   if(change > 0) {
     updateTextInBox("You did well on your finals!" + " Your new GPA is: " + player.GPA);
     if(player.GPA > 4) {
@@ -248,7 +258,7 @@ function initStatChanges(focus) {
 }
 
 function updateHappiness() {
-  player.happiness = Math.floor(player.happiness + (((.6 * player.social) + (.4 * player.sleep) - 75) / 100) * player.happiness);
+  player.happiness = Math.floor(player.happiness + (((.6 * player.social) + (.4 * player.sleep) - 65) / 100) * player.happiness);
   if (player.happiness > 100) {
     player.happiness = 100;
   }
@@ -262,6 +272,16 @@ function gameplay() {
 function nextWeek(event) {
     if (event.keyCode == 32) {
         document.removeEventListener('keydown', nextWeek);
+        week++;
+        if (week == 9) {
+            semester++;
+            week = 1;
+            landmarkReached();
+        }
+        if (semester == 3) {
+            year++;
+            semester = 1;
+        }
         gameplay();
     }
 }
@@ -346,7 +366,7 @@ function hud(){
     rec3.graphics.setStrokeStyle(8, "round");
     rec3.graphics.beginStroke(white).beginFill(black).drawRect(770, 370, 200, 200);
 
-    var date = new createjs.Text('Year 1, Semester 1', '40px VT323', white);
+    var date = new createjs.Text('Year ' + year + ', Semester ' + semester + ': Week ' + week, '40px VT323', white);
     date.x = 385 - date.getMeasuredWidth()/2;
     date.y = 388;
 
@@ -379,7 +399,20 @@ function hud(){
     sletext.x = 870 - sletext.getMeasuredWidth()/2;
     sletext.y = 500 + sletext.getMeasuredHeight();
 
-    var cha = new createjs.Bitmap("img/dogelet.png");
+
+    var path;
+
+    if (player.happiness > 70){
+      path = "img/"+player.name+"hap.png";
+    }
+    else if (player.happiness > 40){
+      path = "img/"+player.name+"meh.png";
+    }
+    else{
+      path = "img/"+player.name+"sad.png";
+    }
+
+    var cha = new createjs.Bitmap(path);
     cha.x = 870 - 144/2;
     cha.y = 50;
     cha.scale = .5;
