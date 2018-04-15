@@ -22,7 +22,6 @@ var player = {
 }
 
 function init() {
-  console.log("hello" + player.intelligence);
   canvas = document.getElementById("demoCanvas");
   stage = new createjs.Stage(canvas);
   createjs.Ticker.on("tick", stage);
@@ -189,16 +188,20 @@ function landmarkReached() {
   } else {
     difficulty = 75;
   }
+
   var change = ((player.intelligence*0.7 + player.sleep*0.3 - difficulty)/100)*player.GPA;
-  player.GPA = player.GPA + change;
-  if(change > 0) {
-    updateTextInBox("You did well on your finals!" + " Your new GPA is: " + player.GPA);
-    if(player.GPA > 4) {
-      player.GPA = 4;
+  player.GPA = Math.floor((player.GPA + change) * 100) / 100;
+    if(change > 0.1) {
+        updateTextInBox("You did well on your finals!" + " Your new GPA is: " + player.GPA);
+        if(player.GPA > 4) {
+          player.GPA = 4;
+        }
+    } else if (change < -0.1) {
+        updateTextInBox("You did poorly on your finals." + " Your new GPA is: " + player.GPA);
+    } else {
+        updateTextInBox("You did okay on your finals." + " Your new GPA is: " + player.GPA);
     }
-  } else if (change < 0) {
-    updateTextInBox("You did poorly on your finals." + " Your new GPA is: " + player.GPA);
-  }
+  document.addEventListener('keydown', nextWeek);
 }
 
 function minusRandomScalar() {
@@ -247,12 +250,13 @@ function initStatChanges(focus) {
   }
 
   updateHappiness();
-  if (player.happiness <= 0) {
+  if (player.happiness <= 0 || player.GPA < 2) {
     console.log("You lose please quit.");
-  }
-
-  document.removeEventListener('keydown', handleChooseFocus);
-  document.addEventListener('keydown', nextWeek);
+    lostPage();
+  } else {
+    document.removeEventListener('keydown', handleChooseFocus);
+    document.addEventListener('keydown', nextWeek);
+}
 
 }
 
@@ -276,6 +280,7 @@ function nextWeek(event) {
             semester++;
             week = 1;
             landmarkReached();
+            return;
         }
         if (semester == 3) {
             year++;
@@ -320,35 +325,31 @@ function handleChooseFocus(event) {
     initStatChanges(focus);
   }
 }
-function lostPage() {
-//  "You won't be able to feed a family with your GPA"
-// "You develop depression. You should've gone to UCLA"
-var lostText;
-if (player.happiness <= 0) {
-//  lostText = console.log("You developed crippling depression. Should've gone to UCLA.", "70px VT323", textColor);
-  lostText.x = canvas.width / 2 - lostText.getMeasuredWidth() / 2;
-  lostText.y = (canvas.height / 16) * 4;
-}
 
-else if (player.GPA) {
+function lostPage() {
+  //  "You won't be able to feed a family with your GPA"
+  // "You develop depression. You should've gone to UCLA"
+  var lostText;
+  document.removeEventListener('keydown', nextWeek);
   document.addEventListener('keydown', restartGame);
-//  console.log("You get put on academic probation. You won't get an internship. You won't be able to feed your family.", "70px VT323", textColor);
-  lostText.x = canvas.width / 2 - lostText.getMeasuredWidth() / 2;
-  lostText.y = (canvas.height / 16) * 4;
-}
-//TODO:
-//Display lostText
-//Option to restart
-  var restartText = new createjs.Text("Restart? (a)", "50px VT323", textColor);
-  player2.x = canvas.width / 2 - player2.getMeasuredWidth() / 2;
-  player2.y = (canvas.height / 15) * 10;
-  stage.addChild(restartText);
-  stage.update();
+  if (player.happiness <= 0) {
+    youLost("You developed crippling depression. Should've gone to UCLA.");
+    // lostText.x = canvas.width / 2 - lostText.getMeasuredWidth() / 2;
+    // lostText.y = (canvas.height / 16) * 4;
+  }
+
+  else if (player.GPA < 2) {
+    youLost("You get put on academic probation. You won't get an internship. You won't be able to feed your family.");
+    // lostText.x = canvas.width / 2 - lostText.getMeasuredWidth() / 2;
+    // lostText.y = (canvas.height / 16) * 4;
+  }
 }
 
 function restartGame(event) {
   if (event.keyCode == 65) {
     location.reload();
+  } else if (event.keyCode == 32) {
+    return;
   }
 }
 
@@ -430,11 +431,11 @@ function hud(){
 function updateTextInBox(stringToShow) {
   hud();
 
-  if(stringToShow.length > 55) {
-    var text1 = new createjs.Text(stringToShow.slice(0, 55), '30px VT323', white);
+  if(stringToShow.length > 50) {
+    var text1 = new createjs.Text(stringToShow.slice(0, 50), '30px VT323', white);
     text1.x = 385 - text1.getMeasuredWidth()/2;
     text1.y = 388 + 55;
-    var text2 = new createjs.Text(stringToShow.slice(55), '30px VT323', white);
+    var text2 = new createjs.Text(stringToShow.slice(50), '30px VT323', white);
     text2.x = 385 - text2.getMeasuredWidth()/2;
     text2.y = 388 + 95;
     stage.addChild(text1, text2);
@@ -449,5 +450,30 @@ function updateTextInBox(stringToShow) {
   next.x = 385 - next.getMeasuredWidth()/2;
   next.y = 388 + 145;
   stage.addChild(next);
+}
 
+function youLost(stringToShow) {
+  hud();
+  if(stringToShow.length > 50) {
+    var text1 = new createjs.Text(stringToShow.slice(0, 50), '30px VT323', white);
+    text1.x = 385 - text1.getMeasuredWidth()/2;
+    text1.y = 388 + 55;
+    var text2 = new createjs.Text(stringToShow.slice(50), '30px VT323', white);
+    text2.x = 385 - text2.getMeasuredWidth()/2;
+    text2.y = 388 + 95;
+    stage.addChild(text1, text2);
+  } else {
+    var text1 = new createjs.Text(stringToShow, '30px VT323', white);
+    text1.x = 385 - text1.getMeasuredWidth()/2;
+    text1.y = 388 + 50;
+    stage.addChild(text1);
+  }
+  document.removeEventListener('keydown', nextWeek);
+  document.removeEventListener('keydown', handleChooseFocus);
+
+
+  const next = new createjs.Text("Restart (a)", "25px VT323", white);
+  next.x = 385 - next.getMeasuredWidth()/2;
+  next.y = 388 + 145;
+  stage.addChild(next);
 }
