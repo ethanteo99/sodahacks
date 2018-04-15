@@ -28,9 +28,13 @@ var happiness;
 function init() {
   canvas = document.getElementById("demoCanvas");
   stage = new createjs.Stage(canvas);
-  
+  createjs.Ticker.on("tick", stage);
   stage.update();
   createMenu();
+}
+
+function tick(event) {
+    stage.update(event);
 }
 
 function handleClick(event) {
@@ -235,9 +239,7 @@ function hud(){
     cha.x = 870 - 144/2;
     cha.y = 50;
     cha.scale = .5;
-    cha.image.onload = function() {
-    stage.update();
-    }
+
  
 
     stage.addChild(background);
