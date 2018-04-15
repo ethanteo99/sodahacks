@@ -44,7 +44,6 @@ function handleClick(event) {
 function choosePlayer() {
   stage.removeAllChildren();
   document.addEventListener('keydown', handleChoosePlayerMenuKey);
-  console.log("choose player!");
 
   var background = new createjs.Shape();
   background.graphics.beginFill("rgb(0,50,98)").drawRect(0,0,1000,600);
@@ -106,7 +105,6 @@ function createMenu() {
 function handleStartMenuKey(event) {
     if (event.keyCode == 83) {
         document.removeEventListener('keydown', handleStartMenuKey);
-        console.log("start game");
         choosePlayer();
     } else if (event.keyCode == 73) {
         showInstructions();
@@ -216,7 +214,6 @@ function bideo(){
 }
 
 function initPlayer(playerNum) {
-  console.log("initializing player");
   if(playerNum == 1) {
     player.name = "Chad";
     player.intelligence = 60;
@@ -332,10 +329,10 @@ function initStatChanges(focus) {
     $("#party").fadeIn();
     $("#bed").fadeOut();
     if (scalar == 1 || scalar == 2) {
-      updateTextInBox("Your friends are busy this week, but they manage to squeeze in a little time for you +" + scalar + " social");
+      updateTextInBox("Your friends are busy this week, but they manage to squeeze in a little time for you: +" + scalar + " social");
     }
     else {
-      updateTextInBox("You go to a frat party, shotgun a beer, slap a wine bag, and win a game of beer pong +" + scalar + " social");
+      updateTextInBox("You go to a frat party, shotgun a beer, slap a wine bag, and win a game of beer pong: +" + scalar + " social");
     }
     player.sleep = player.sleep - minusRandomScalar();
     player.intelligence = player.intelligence - minusRandomScalar();
@@ -344,7 +341,6 @@ function initStatChanges(focus) {
 
   updateHappiness();
   if (player.happiness <= 0 || player.GPA < 2) {
-    console.log("You lose please quit.");
     lostPage();
   }
   else if (year > 4) {
@@ -382,7 +378,7 @@ function winScreen() {
     else if (playerNum == 3) {
       winText = winText + "and moved back in  with your parents!";
     }
-    console.log(winText);
+    // console.log(winText);
     endText(winText);
   }
 
@@ -390,7 +386,6 @@ function nextWeek(event) {
     if (event.keyCode == 32) {
         document.removeEventListener('keydown', nextWeek);
         week++;
-        console.log("weeks going by");
         if (week == 9) {
             semester++;
             week = 1;
@@ -719,13 +714,7 @@ function updateTextInBox(stringToShow) {
   hud();
 
   if(stringToShow.length > 50) {
-    var text1 = new createjs.Text(stringToShow.slice(0, 50), '30px VT323', white);
-    text1.x = 385 - text1.getMeasuredWidth()/2;
-    text1.y = 388 + 55;
-    var text2 = new createjs.Text(stringToShow.slice(50), '30px VT323', white);
-    text2.x = 385 - text2.getMeasuredWidth()/2;
-    text2.y = 388 + 95;
-    stage.addChild(text1, text2);
+    splitString(stringToShow);
   } else {
     var text1 = new createjs.Text(stringToShow, '30px VT323', white);
     text1.x = 385 - text1.getMeasuredWidth()/2;
@@ -741,21 +730,14 @@ function updateTextInBox(stringToShow) {
 
 function endText(stringToShow) {
   hud();
-  if(stringToShow.length > 50) {
-    var text1 = new createjs.Text(stringToShow.slice(0, 50), '30px VT323', white);
-    text1.x = 385 - text1.getMeasuredWidth()/2;
-    text1.y = 388 + 55;
-    var text2 = new createjs.Text(stringToShow.slice(50), '30px VT323', white);
-    text2.x = 385 - text2.getMeasuredWidth()/2;
-    text2.y = 388 + 95;
-    stage.addChild(text1, text2);
+  if(stringToShow.length > 55) {
+    splitString(stringToShow);
   } else {
     var text1 = new createjs.Text(stringToShow, '30px VT323', white);
     text1.x = 385 - text1.getMeasuredWidth()/2;
     text1.y = 388 + 50;
     stage.addChild(text1);
   }
-  console.log("Why wont this work");
   document.removeEventListener('keydown', nextWeek);
   document.removeEventListener('keydown', handleChooseFocus);
 
@@ -764,4 +746,18 @@ function endText(stringToShow) {
   next.y = 388 + 145;
   stage.addChild(next);
   document.addEventListener('keydown', restartGame);
+}
+
+function splitString(stringToShow) {
+  var findSpace = 47;
+  while(!(stringToShow.slice(findSpace, findSpace + 1) == ' ')) {
+    findSpace+=1;
+  }
+  var text1 = new createjs.Text(stringToShow.slice(0, findSpace), '30px VT323', white);
+  text1.x = 385 - text1.getMeasuredWidth()/2;
+  text1.y = 388 + 55;
+  var text2 = new createjs.Text(stringToShow.slice(findSpace), '30px VT323', white);
+  text2.x = 385 - text2.getMeasuredWidth()/2;
+  text2.y = 388 + 95;
+  stage.addChild(text1, text2);
 }
