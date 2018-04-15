@@ -22,6 +22,7 @@ var GPA;
 var happiness;
 
 function init() {
+  console.log("hello" + player.intelligence);
   canvas = document.getElementById("demoCanvas");
   stage = new createjs.Stage(canvas);
 
@@ -148,4 +149,19 @@ function initPlayer(playerNum) {
     player.sleep = 30;
   }
   console.log(player);
+}
+
+function landmarkReached() {
+  console.log("Received final grades.");
+  var change = ((player.intelligence - 100)/100)*player.GPA;
+  player.GPA = player.GPA - change;
+  if(change > 0) {
+    console.log("You did well on your finals!");
+    if(player.GPA > 4) {
+      player.GPA = 4;
+    }
+  } else if (change < 0) {
+    console.log("You did poorly on your finals.");
+  }
+  console.log("Your new GPA is: " + player.GPA);
 }
