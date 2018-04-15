@@ -180,7 +180,15 @@ function initPlayer(playerNum) {
 
 function landmarkReached() {
   console.log("Received final grades.");
-  var change = ((player.intelligence - 100)/100)*player.GPA;
+  var difficulty;
+  if (player.name == "Chad") {
+    difficulty = 80;
+  } else if (player.name == "EECS") {
+    difficulty = 90;
+  } else {
+    difficulty = 70;
+  }
+  var change = ((player.intelligence*0.7 + player.sleep*0.3 - difficulty)/100)*player.GPA;
   player.GPA = player.GPA - change;
   if(change > 0) {
     console.log("You did well on your finals!");
@@ -214,15 +222,15 @@ function hud(){
     date.x = 385 - date.getMeasuredWidth()/2;
     date.y = 388;
 
-    var nametext = new createjs.Text('Chad', '30px VT323', white);
+    var nametext = new createjs.Text(player.name, '30px VT323', white);
     nametext.x = 870 - nametext.getMeasuredWidth()/2;
     nametext.y = 190 + nametext.getMeasuredHeight();
 
-    var gpatext = new createjs.Text('GPA: 2.56', '30px VT323', white);
+    var gpatext = new createjs.Text('GPA: ' + player.GPA, '30px VT323', white);
     gpatext.x = 870 - gpatext.getMeasuredWidth()/2;
     gpatext.y = 230 + gpatext.getMeasuredHeight();
 
-    var haptext = new createjs.Text('Happiness: 73%', '30px VT323', white);
+    var haptext = new createjs.Text('Happiness: ' + player.happiness + '%', '30px VT323', white);
     haptext.x = 870 - haptext.getMeasuredWidth()/2;
     haptext.y = 270 + haptext.getMeasuredHeight();
 
@@ -231,15 +239,15 @@ function hud(){
     atrtext.y = 390 + atrtext.getMeasuredHeight();
 
 
-    var inttext = new createjs.Text('Intelligence: 73', '25px VT323', white);
+    var inttext = new createjs.Text('Intelligence: ' + player.intelligence, '25px VT323', white);
     inttext.x = 870 - inttext.getMeasuredWidth()/2;
     inttext.y = 440 + inttext.getMeasuredHeight();
 
-    var soctext = new createjs.Text('Social: 73', '25px VT323', white);
+    var soctext = new createjs.Text('Social: ' + player.social, '25px VT323', white);
     soctext.x = 870 - soctext.getMeasuredWidth()/2;
     soctext.y = 470 + soctext.getMeasuredHeight();
 
-    var sletext = new createjs.Text('Sleep: 73', '25px VT323', white);
+    var sletext = new createjs.Text('Sleep: ' + player.sleep, '25px VT323', white);
     sletext.x = 870 - sletext.getMeasuredWidth()/2;
     sletext.y = 500 + sletext.getMeasuredHeight();
 
