@@ -174,7 +174,7 @@ function initPlayer(playerNum) {
 
   document.removeEventListener('keydown', proceedWithPlayer);
 
-  hud();
+  gameplay();
 }
 
 function landmarkReached() {
@@ -223,25 +223,6 @@ function endWeek() {
 
   stage.addChild(title, sleep, study, party);
   stage.update();
-}
-
-function handleChooseFocus(event) {
-  var focus = 0;
-  if (event.keyCode == 65) {
-    console.log("Let's focus on sleeping!");
-    focus = 1;
-  } else if (event.keyCode == 66) {
-    console.log("Let's focus on studying!");
-    focus = 2;
-  } else if (event.keyCode == 67) {
-    console.log("Let's focus on partying!");
-    focus = 3;
-  }
-
-  if(focus != 0) {
-    document.removeEventListener('keydown', handleChoosePlayerMenuKey);
-    initStatChanges(focus);
-  }
 }
 
 function minusRandomScalar() {
@@ -293,14 +274,59 @@ function initStatChanges(focus) {
   }
 
   updateHappiness();
-  if (happiness <= 0) {
+  if (player.happiness <= 0) {
     console.log("You lose please quit.");
   }
 
 }
 
 function updateHappiness() {
-  player.happiness = player.happiness + (((.6 * social) + (.4 * sleep) - 80) / 100) * player.happiness;
+  player.happiness = player.happiness + (((.6 * player.social) + (.4 * player.sleep) - 80) / 100) * player.happiness;
+}
+
+function gameplay() {
+    hud();
+    options();
+}
+
+function options() {
+    const option = new createjs.Text("Choose your focus for the week:", "25px VT323", white);
+    option.x = 50;
+    option.y = 388 + 35;
+
+    const study = new createjs.Text("(1) Study", "25px VT323", white);
+    study.x = 50;
+    study.y = 388 + 65;
+
+    const sleep = new createjs.Text("(2) Sleep", "25px VT323", white);
+    sleep.x = 50;
+    sleep.y = 388 + 95;
+
+    const party = new createjs.Text("(3) Party", "25px VT323", white);
+    party.x = 50;
+    party.y = 388 + 125;
+
+    stage.addChild(option, study, sleep, party);
+    document.addEventListener('keydown', handleChooseFocus);
+}
+
+function handleChooseFocus(event) {
+    var focus = 0;
+    if (event.keyCode == 49) {
+        console.log("Let's focus on sleeping!");
+        focus = 1;
+    } else if (event.keyCode == 50) {
+        console.log("Let's focus on studying!");
+        focus = 2;
+    } else if (event.keyCode == 51) {
+        console.log("Let's focus on partying!");
+        focus = 3;
+    }
+
+  if(focus != 0) {
+    document.removeEventListener('keydown', handleChoosePlayerMenuKey);
+    initStatChanges(focus);
+  }
 }
 
 function hud(){
@@ -378,4 +404,4 @@ function hud(){
     stage.addChild(cha);
     stage.update();
 
-    }
+}
