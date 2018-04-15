@@ -2,13 +2,15 @@ var canvas;
 var stage;
 var textColor = "#000000";
 var buttonColor = "#0033cc";
-
 var black = "#0E1111";
 var white = "#EEF0F0";
 var playerNum = 0;
 const width = 1000;
 const height = 600;
 const font = '30px VT323';
+var week = 1;
+var semester = 1;
+var year = 1;
 
 var player = {
   name: "",
@@ -158,24 +160,24 @@ function initPlayer(playerNum) {
   console.log("initializing player");
   if(playerNum == 1) {
     player.name = "chad";
-    player.intelligence = 20;
-    player.social = 30;
-    player.sleep = 25;
+    player.intelligence = 55;
+    player.social = 80;
+    player.sleep = 65;
   } else if(playerNum == 2) {
     player.name = "eecs";
-    player.intelligence = 35;
-    player.social = 20;
-    player.sleep = 20;
+    player.intelligence = 80;
+    player.social = 60;
+    player.sleep = 60;
   } else if(playerNum == 3) {
     player.name = "media studies";
-    player.intelligence = 20;
-    player.social = 25;
-    player.sleep = 30;
+    player.intelligence = 60;
+    player.social = 70;
+    player.sleep = 70;
   }
 
   document.removeEventListener('keydown', proceedWithPlayer);
 
-  updateTextInBox("test text");
+  gameplay();
 }
 
 function landmarkReached() {
@@ -183,12 +185,12 @@ function landmarkReached() {
   if (player.name == "Chad") {
     difficulty = 80;
   } else if (player.name == "EECS") {
-    difficulty = 90;
+    difficulty = 85;
   } else {
-    difficulty = 70;
+    difficulty = 75;
   }
   var change = ((player.intelligence*0.7 + player.sleep*0.3 - difficulty)/100)*player.GPA;
-  player.GPA = player.GPA - change;
+  player.GPA = player.GPA + change;
   if(change > 0) {
     updateTextInBox("You did well on your finals!" + " Your new GPA is: " + player.GPA);
     if(player.GPA > 4) {
@@ -199,50 +201,8 @@ function landmarkReached() {
   }
 }
 
-function endWeek() {
-  stage.removeAllChildren();
-  document.addEventListener('keydown', handleChooseFocus);
-
-  var title = new createjs.Text("Choose focus for next week", "70px VT323", textColor);
-  title.x = canvas.width / 2 - title.getMeasuredWidth() / 2;
-  title.y = title.y = (canvas.height / 15) * 4;
-
-  var sleep = new createjs.Text("Sleep (a)", "50px VT323", textColor);
-  sleep.x = canvas.width / 2 - sleep.getMeasuredWidth() / 2;
-  sleep.y = (canvas.height / 15) * 8;
-
-  var study = new createjs.Text("Study (b)", "50px VT323", textColor);
-  study.x = canvas.width / 2 - study.getMeasuredWidth() / 2;
-  study.y = (canvas.height / 15) * 10;
-
-  var party = new createjs.Text("Party (c)", "50px VT323", textColor);
-  party.x = canvas.width / 2 - party.getMeasuredWidth() / 2;
-  party.y = (canvas.height / 15) * 12;
-
-  stage.addChild(title, sleep, study, party);
-}
-
-function handleChooseFocus(event) {
-  var focus = 0;
-  if (event.keyCode == 65) {
-    updateTextInBox("Let's focus on sleeping!");
-    focus = 1;
-  } else if (event.keyCode == 66) {
-    updateTextInBox("Let's focus on studying!");
-    focus = 2;
-  } else if (event.keyCode == 67) {
-    updateTextInBox("Let's focus on partying!");
-    focus = 3;
-  }
-
-  if(focus != 0) {
-    document.removeEventListener('keydown', handleChoosePlayerMenuKey);
-    initStatChanges(focus);
-  }
-}
-
 function minusRandomScalar() {
-  return Math.floor(Math.random() * 5);
+  return Math.floor(Math.random() * 4);
 }
 
 function initStatChanges(focus) {
@@ -250,51 +210,146 @@ function initStatChanges(focus) {
   if (focus == 1) {
 
     if (scalar == 1 || scalar == 2) {
-      updateTextInBox("Despite trying your best, you had a rough week of sleep: +" + scalar);
+      updateTextInBox("Despite trying your best, you had a rough week of sleep: +" + scalar + " sleep");
     }
     else {
-      updateTextInBox("You sleep like a baby: +" + scalar);
+      updateTextInBox("You sleep like a baby: +" + scalar + " sleep");
     }
 
     player.sleep = player.sleep + scalar;
-    player.intelligence = player.intelligence - minusRandomScalar;
-    player.social = player.social - minusRandomScalar;
+    player.intelligence = player.intelligence - minusRandomScalar();
+    player.social = player.social - minusRandomScalar();
   }
 
   if (focus == 2) {
 
     if (scalar == 1 || scalar == 2) {
-      updateTextInBox("Even after studying, the concepts are still fuzzy in your brain: +" + scalar);
+      updateTextInBox("Even after studying, the concepts are still fuzzy in your brain: +" + scalar + " intelligence");
     } else {
-      updateTextInBox("You spend countless hours at Moffitt, shower less, and stink more: +" + scalar);
+      updateTextInBox("You spend countless hours at Moffitt, shower less, and stink more: +" + scalar + " intelligence");
     }
 
-    player.sleep = player.sleep - minusRandomScalar;
+    player.sleep = player.sleep - minusRandomScalar();
     player.intelligence = player.intelligence + scalar;
-    player.social = player.social - minusRandomScalar;
+    player.social = player.social - minusRandomScalar();
   }
 
   if (focus == 3) {
     if (scalar == 1 || scalar == 2) {
-      updateTextInBox("Your friends are busy this week, but they manage to squeeze in a little time for you +" + scalar);
+      updateTextInBox("Your friends are busy this week, but they manage to squeeze in a little time for you +" + scalar + " social");
     }
     else {
-      updateTextInBox("You go to a frat party, shotgun a beer, slap a wine bag, and win a game of beer pong +" + scalar);
+      updateTextInBox("You go to a frat party, shotgun a beer, slap a wine bag, and win a game of beer pong +" + scalar + " social");
     }
-    player.sleep = player.sleep - minusRandomScalar;
-    player.intelligence = player.intelligence - minusRandomScalar;
+    player.sleep = player.sleep - minusRandomScalar();
+    player.intelligence = player.intelligence - minusRandomScalar();
     player.social = player.social + scalar;
   }
 
   updateHappiness();
-  if (happiness <= 0) {
-    updateTextInBox("You lose please quit.");
+  if (player.happiness <= 0) {
+    console.log("You lose please quit.");
   }
+
+  document.removeEventListener('keydown', handleChooseFocus);
+  document.addEventListener('keydown', nextWeek);
 
 }
 
 function updateHappiness() {
-  player.happiness = player.happiness + (((.6 * social) + (.4 * sleep) - 80) / 100) * player.happiness;
+  player.happiness = Math.floor(player.happiness + (((.6 * player.social) + (.4 * player.sleep) - 65) / 100) * player.happiness);
+  if (player.happiness > 100) {
+    player.happiness = 100;
+  }
+}
+
+function gameplay() {
+    hud();
+    options();
+}
+
+function nextWeek(event) {
+    if (event.keyCode == 32) {
+        document.removeEventListener('keydown', nextWeek);
+        week++;
+        if (week == 9) {
+            semester++;
+            week = 1;
+            landmarkReached();
+        }
+        if (semester == 3) {
+            year++;
+            semester = 1;
+        }
+        gameplay();
+    }
+}
+
+function options() {
+    const option = new createjs.Text("Choose your focus for the week:", "25px VT323", white);
+    option.x = 50;
+    option.y = 388 + 45;
+
+    const study = new createjs.Text("(1) Sleep", "25px VT323", white);
+    study.x = 50;
+    study.y = 388 + 75;
+
+    const sleep = new createjs.Text("(2) Study", "25px VT323", white);
+    sleep.x = 50;
+    sleep.y = 388 + 105;
+
+    const party = new createjs.Text("(3) Party", "25px VT323", white);
+    party.x = 50;
+    party.y = 388 + 135;
+
+    stage.addChild(option, study, sleep, party);
+    document.addEventListener('keydown', handleChooseFocus);
+}
+
+function handleChooseFocus(event) {
+    var focus = 0;
+    if (event.keyCode == 49) {
+        focus = 1;
+    } else if (event.keyCode == 50) {
+        focus = 2;
+    } else if (event.keyCode == 51) {
+        focus = 3;
+    }
+
+  if(focus != 0) {
+    initStatChanges(focus);
+  }
+}
+function lostPage() {
+//  "You won't be able to feed a family with your GPA"
+// "You develop depression. You should've gone to UCLA"
+var lostText;
+if (player.happiness <= 0) {
+//  lostText = console.log("You developed crippling depression. Should've gone to UCLA.", "70px VT323", textColor);
+  lostText.x = canvas.width / 2 - lostText.getMeasuredWidth() / 2;
+  lostText.y = (canvas.height / 16) * 4;
+}
+
+else if (player.GPA) {
+  document.addEventListener('keydown', restartGame);
+//  console.log("You get put on academic probation. You won't get an internship. You won't be able to feed your family.", "70px VT323", textColor);
+  lostText.x = canvas.width / 2 - lostText.getMeasuredWidth() / 2;
+  lostText.y = (canvas.height / 16) * 4;
+}
+//TODO:
+//Display lostText
+//Option to restart
+  var restartText = new createjs.Text("Restart? (a)", "50px VT323", textColor);
+  player2.x = canvas.width / 2 - player2.getMeasuredWidth() / 2;
+  player2.y = (canvas.height / 15) * 10;
+  stage.addChild(restartText);
+  stage.update();
+}
+
+function restartGame(event) {
+  if (event.keyCode == 65) {
+    location.reload();
+  }
 }
 
 function hud(){
@@ -314,7 +369,7 @@ function hud(){
     rec3.graphics.setStrokeStyle(8, "round");
     rec3.graphics.beginStroke(white).beginFill(black).drawRect(770, 370, 200, 200);
 
-    var date = new createjs.Text('Year 1, Semester 1', '40px VT323', white);
+    var date = new createjs.Text('Year ' + year + ', Semester ' + semester + ': Week ' + week, '40px VT323', white);
     date.x = 385 - date.getMeasuredWidth()/2;
     date.y = 388;
 
@@ -378,16 +433,21 @@ function updateTextInBox(stringToShow) {
   if(stringToShow.length > 55) {
     var text1 = new createjs.Text(stringToShow.slice(0, 55), '30px VT323', white);
     text1.x = 385 - text1.getMeasuredWidth()/2;
-    text1.y = 388 + 60;
+    text1.y = 388 + 55;
     var text2 = new createjs.Text(stringToShow.slice(55), '30px VT323', white);
     text2.x = 385 - text2.getMeasuredWidth()/2;
-    text2.y = 388 + 100;
+    text2.y = 388 + 95;
     stage.addChild(text1, text2);
   } else {
     var text1 = new createjs.Text(stringToShow, '30px VT323', white);
     text1.x = 385 - text1.getMeasuredWidth()/2;
     text1.y = 388 + 50;
     stage.addChild(text1);
-    stage.addChild(text1);
   }
+
+  const next = new createjs.Text("Press space to advance to next week", "25px VT323", white);
+  next.x = 385 - next.getMeasuredWidth()/2;
+  next.y = 388 + 145;
+  stage.addChild(next);
+
 }
