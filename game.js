@@ -437,7 +437,7 @@ function landmarkReached() {
           player.GPA = 4.00;
         }
         updateTextInBox("You did extremely well on your finals!" + " Your new GPA is: " + player.GPA);
-    } else if (change > 0.75) {
+    } else if (change > 0.075) {
         var numSems = player.gradeSummary.semesters.push(3.5 + minusRandomScalar()/10);
         var sumGPA = player.gradeSummary.semesters.reduce(function(a, b) { return a + b; }, 0);
         player.GPA = sumGPA / numSems;
@@ -727,6 +727,10 @@ function splitString(stringToShow) {
   var findSpace = 47;
   while(!(stringToShow.slice(findSpace, findSpace + 1) == ' ')) {
     findSpace+=1;
+    if(findSpace > stringToShow.length){
+        break;
+    }
+    console.log("is this in an infinite loop");
   }
   var text1 = new createjs.Text(stringToShow.slice(0, findSpace), '30px VT323', white);
   text1.x = 385 - text1.getMeasuredWidth()/2;
