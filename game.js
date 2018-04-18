@@ -405,13 +405,18 @@ function nextWeek(event) {
             if (year == 4 && semester == 3) {
                 winScreen();
             } else {
-                landmarkReached();
+                if (semester == 3) {
+                    week = 8;
+                    semester = 2;
+                    landmarkReached();
+                    semester = 1;
+                    year++;
+                } else {
+                    landmarkReached();
+                }
             }
+            week = 1;
             return;
-        }
-        if (semester == 3) {
-            year++;
-            semester = 1;
         }
 
         if (Math.random() > 0.85) {
@@ -470,6 +475,11 @@ function landmarkReached() {
         player.GPA = Math.round((player.GPA + change)*100)/100;
         updateTextInBox("You completely failed your finals." + " Your new GPA is: " + player.GPA);
 
+    }
+    if (player.happiness <= 0 || player.GPA < 2) {
+      lostPage();
+      semester = 2;
+      week = 8;
     }
     document.addEventListener('keydown', afterChallenge);
 }
