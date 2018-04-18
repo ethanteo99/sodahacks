@@ -29,7 +29,7 @@ function init() {
   canvas = document.getElementById("demoCanvas");
   stage = new createjs.Stage(canvas);
   createjs.Ticker.on("tick", stage);
-  createjs.Ticker.framerate = 40;
+  createjs.Ticker.framerate = 80;
   createMenu();
 }
 
@@ -37,8 +37,54 @@ function tick(event) {
     stage.update(event);
 }
 
-function handleClick(event) {
-  console.log("clicked!");
+function createMenu() {
+    document.addEventListener('keydown', handleStartMenuKey);
+
+    var menu = new createjs.Container();
+    menu.x = 0;
+    menu.y = 0;
+    menu.setBounds(0, 0, width, height);
+
+    var back = new createjs.Bitmap("img/welcome.png");
+    back.x = 0;
+    back.y = 0;
+
+    var rec1 = new createjs.Shape();
+    rec1.graphics.setStrokeStyle(0, "round");
+    rec1.graphics.beginStroke("rgba(0,50,98,.8)").beginFill("rgba(0,50,98,.8)").drawRect(145, 100, 710, 190);
+
+    var welcome = new createjs.Text('Berkeley VR', '70px VT323', white);
+    welcome.x = canvas.width/2 - 150;
+    welcome.y = 120;
+
+
+    var start = new createjs.Text('Start Game (S)', '40px VT323', white);
+    start.x = canvas.width/2 - 115;
+    start.y = 220;
+
+    var rec2 = new createjs.Shape();
+    rec2.graphics.setStrokeStyle(0, "round");
+    rec2.graphics.beginStroke("rgba(0,50,98,.8)").beginFill("rgba(0,50,98,.8)").drawRect(145, 375, 710, 150);
+
+    var show = "Welcome to Berkeley! Two rules: GPA greater than 2.0 and avoid depression!"
+
+    var text1 = new createjs.Text(show.slice(0, 31), '30px VT323', white);
+    text1.x = canvas.width / 2 - text1.getMeasuredWidth() / 2;
+    text1.y = (canvas.height / 15) * 10;
+
+    var text2 = new createjs.Text(show.slice(31), '30px VT323', white);
+    text2.x = canvas.width / 2 - text2.getMeasuredWidth() / 2;
+    text2.y = (canvas.height / 15) * 11;
+
+    menu.addChild(back, rec1, welcome, start, rec2, text1, text2);
+    stage.addChild(menu);
+}
+
+function handleStartMenuKey(event) {
+    if (event.keyCode == 83) {
+        document.removeEventListener('keydown', handleStartMenuKey);
+        choosePlayer();
+    }
 }
 
 function choosePlayer() {
@@ -65,76 +111,6 @@ function choosePlayer() {
   player3.y = (canvas.height / 15) * 12;
 
   stage.addChild(background, title, player1, player2, player3);
-}
-
-function createMenu() {
-    document.addEventListener('keydown', handleStartMenuKey);
-
-    var menu = new createjs.Container();
-    menu.x = 0;
-    menu.y = 0;
-    menu.setBounds(0, 0, width, height);
-
-    var back = new createjs.Bitmap("img/welcome.png");
-    back.x = 0;
-    back.y = 0;
-
-    var rec1 = new createjs.Shape();
-    rec1.graphics.setStrokeStyle(0, "round");
-    rec1.graphics.beginStroke("rgba(0,50,98,.8)").beginFill("rgba(0,50,98,.8)").drawRect(145, 100, 710, 200);
-
-    var welcome = new createjs.Text('Berkeley VR', '70px VT323', white);
-    welcome.x = canvas.width/2 - 150;
-    welcome.y = 120;
-
-
-    var start = new createjs.Text('Start Game (S)', '40px VT323', white);
-    start.x = canvas.width/2 - start.getMeasuredWidth()/2;
-    start.y = 200;
-
-    start.addEventListener("click", handleClick);
-
-    var instructions = new createjs.Text('Instructions (I)', '40px VT323', white);
-    instructions.x = canvas.width/2 - instructions.getMeasuredWidth()/2;
-    instructions.y = 250;
-
-    menu.addChild(back, rec1, welcome, start, instructions);
-    stage.addChild(menu);
-}
-
-function handleStartMenuKey(event) {
-    if (event.keyCode == 83) {
-        document.removeEventListener('keydown', handleStartMenuKey);
-        choosePlayer();
-    } else if (event.keyCode == 73) {
-        showInstructions();
-    }
-}
-
-function showInstructions(event) {
-    var menu = new createjs.Container();
-    menu.x = 0;
-    menu.y = 0;
-    menu.setBounds(0, 0, width, height);
-
-    var rec2 = new createjs.Shape();
-    rec2.graphics.setStrokeStyle(0, "round");
-    rec2.graphics.beginStroke("rgba(0,50,98,.8)").beginFill("rgba(0,50,98,.8)").drawRect(145, 375, 710, 150);
-
-    var show = "Welcome to Berkeley! Two rules: GPA greater than 2.0 and avoid depression!"
-
-    var text1 = new createjs.Text(show.slice(0, 31), '30px VT323', white);
-    text1.x = canvas.width / 2 - text1.getMeasuredWidth() / 2;
-    text1.y = (canvas.height / 15) * 10;
-
-    var text2 = new createjs.Text(show.slice(31), '30px VT323', white);
-    text2.x = canvas.width / 2 - text2.getMeasuredWidth() / 2;
-    text2.y = (canvas.height / 15) * 11;
-
-    menu.addChild(rec2);
-    menu.addChild(text1, text2);
-    stage.addChild(menu);
-    stage.update();
 }
 
 function handleChoosePlayerMenuKey(event) {
@@ -190,6 +166,7 @@ function proceedWithPlayer(event) {
         bideo();
         initPlayer(playerNum);
     } else if (event.keyCode == 78) {
+        document.removeEventListener('keydown', proceedWithPlayer);
         choosePlayer();
     }
 }
@@ -232,64 +209,124 @@ function initPlayer(playerNum) {
   }
 
   document.removeEventListener('keydown', proceedWithPlayer);
-
   gameplay();
 }
 
-function landmarkReached() {
-  var difficulty;
-  if (player.name == "Chad") {
-    difficulty = 65;
-  } else if (player.name == "EECS") {
-    difficulty = 80;
-  } else {
-    difficulty = 60;
-  }
-
-  var change = ((player.intelligence*0.9 + player.sleep*0.1 - difficulty)/100) + 0.03;
-    if(change > 0.15) {
-        var numSems = player.gradeSummary.semesters.push(4);
-        var sumGPA = player.gradeSummary.semesters.reduce(function(a, b) { return a + b; }, 0);
-        player.GPA = sumGPA / numSems;
-        player.GPA = Math.round((player.GPA + change)*100)/100;
-        if(player.GPA > 4) {
-          player.GPA = 4.00;
-        }
-        updateTextInBox("You did extremely well on your finals!" + " Your new GPA is: " + player.GPA);
-    } else if (change > 0.75) {
-        var numSems = player.gradeSummary.semesters.push(3.5 + minusRandomScalar()/10);
-        var sumGPA = player.gradeSummary.semesters.reduce(function(a, b) { return a + b; }, 0);
-        player.GPA = sumGPA / numSems;
-        player.GPA = Math.round((player.GPA + change)*100)/100;
-        updateTextInBox("You did well on your finals!" + " Your new GPA is: " + player.GPA);
-    } else if (change > 0) {
-        var numSems = player.gradeSummary.semesters.push(3.0 + minusRandomScalar()/10);
-        var sumGPA = player.gradeSummary.semesters.reduce(function(a, b) { return a + b; }, 0);
-        player.GPA = sumGPA / numSems;
-        player.GPA = Math.round((player.GPA + change)*100)/100;
-        updateTextInBox("You did okay on your finals." + " Your new GPA is: " + player.GPA);
-    } else if (change > -.1) {
-        var numSems = player.gradeSummary.semesters.push(2.0 + minusRandomScalar()/10);
-        var sumGPA = player.gradeSummary.semesters.reduce(function(a, b) { return a + b; }, 0);
-        player.GPA = sumGPA / numSems;
-        player.GPA = Math.round((player.GPA + change)*100)/100;
-        updateTextInBox("You did poorly on your finals." + " Your new GPA is: " + player.GPA);
-    } else {
-        var numSems = player.gradeSummary.semesters.push(1.5 + minusRandomScalar()/10);
-        var sumGPA = player.gradeSummary.semesters.reduce(function(a, b) { return a + b; }, 0);
-        player.GPA = sumGPA / numSems;
-        player.GPA = Math.round((player.GPA + change)*100)/100;
-        updateTextInBox("You completely failed your finals." + " Your new GPA is: " + player.GPA);
-
-    }
-  document.addEventListener('keydown', nextWeek);
+function gameplay() {
+    hud();
+    options();
 }
 
-function minusRandomScalar() {
-  return Math.floor(Math.random() * 4);
+
+function hud(){
+    stage.removeAllChildren();
+
+    var rec1 = new createjs.Shape();
+    rec1.graphics.setStrokeStyle(8, "round");
+    rec1.graphics.beginStroke(white).beginFill(black).drawRect(30, 370, 710, 200);
+
+    var rec2 = new createjs.Shape();
+    rec2.graphics.setStrokeStyle(8, "round");
+    rec2.graphics.beginStroke(white).beginFill(black).drawRect(770, 22, 200, 318);
+
+    var rec3 = new createjs.Shape();
+    rec3.graphics.setStrokeStyle(8, "round");
+    rec3.graphics.beginStroke(white).beginFill(black).drawRect(770, 370, 200, 200);
+
+    var date = new createjs.Text('Year ' + year + ', Semester ' + semester + ': Week ' + week, '40px VT323', white);
+    date.x = 385 - date.getMeasuredWidth()/2;
+    date.y = 388;
+
+    var nametext = new createjs.Text(player.name, '30px VT323', white);
+    nametext.x = 870 - nametext.getMeasuredWidth()/2;
+    nametext.y = 190 + nametext.getMeasuredHeight();
+
+    var gpatext = new createjs.Text('GPA: ' + player.GPA, '30px VT323', white);
+    gpatext.x = 870 - gpatext.getMeasuredWidth()/2;
+    gpatext.y = 230 + gpatext.getMeasuredHeight();
+
+    var haptext = new createjs.Text('Happiness: ' + player.happiness + '%', '30px VT323', white);
+    haptext.x = 870 - haptext.getMeasuredWidth()/2;
+    haptext.y = 270 + haptext.getMeasuredHeight();
+
+    var atrtext = new createjs.Text('Attributes', '30px VT323', white);
+    atrtext.x = 870 - atrtext.getMeasuredWidth()/2;
+    atrtext.y = 390 + atrtext.getMeasuredHeight();
+
+
+    var inttext = new createjs.Text('Intelligence: ' + player.intelligence, '25px VT323', white);
+    inttext.x = 870 - inttext.getMeasuredWidth()/2;
+    inttext.y = 440 + inttext.getMeasuredHeight();
+
+    var soctext = new createjs.Text('Social: ' + player.social, '25px VT323', white);
+    soctext.x = 870 - soctext.getMeasuredWidth()/2;
+    soctext.y = 470 + soctext.getMeasuredHeight();
+
+    var sletext = new createjs.Text('Sleep: ' + player.sleep, '25px VT323', white);
+    sletext.x = 870 - sletext.getMeasuredWidth()/2;
+    sletext.y = 500 + sletext.getMeasuredHeight();
+
+    var path;
+
+    if (player.happiness > 70){
+      path = "img/"+playerNum+"hap.png";
+    }
+    else if (player.happiness > 40){
+      path = "img/"+playerNum+"meh.png";
+    }
+    else {
+      path = "img/"+playerNum+"sad.png";
+    }
+
+    var cha = new createjs.Bitmap(path);
+    cha.x = 870 - 144/2;
+    cha.y = 50;
+    cha.scale = .5;
+
+    stage.addChild(rec1, rec2, rec3);
+    stage.addChild(date);
+    stage.addChild(gpatext, haptext, atrtext, inttext, soctext, sletext, nametext);
+    stage.addChild(cha);
+}
+
+function options() {
+    const option = new createjs.Text("Choose your focus for the week:", "25px VT323", white);
+    option.x = 50;
+    option.y = 388 + 45;
+
+    const study = new createjs.Text("(1) Sleep", "25px VT323", white);
+    study.x = 50;
+    study.y = 388 + 75;
+
+    const sleep = new createjs.Text("(2) Study", "25px VT323", white);
+    sleep.x = 50;
+    sleep.y = 388 + 105;
+
+    const party = new createjs.Text("(3) Party", "25px VT323", white);
+    party.x = 50;
+    party.y = 388 + 135;
+
+    stage.addChild(option, study, sleep, party);
+    document.addEventListener('keydown', handleChooseFocus);
+}
+
+function handleChooseFocus(event) {
+    var focus = 0;
+    if (event.keyCode == 49) {
+        focus = 1;
+    } else if (event.keyCode == 50) {
+        focus = 2;
+    } else if (event.keyCode == 51) {
+        focus = 3;
+    }
+
+  if(focus != 0) {
+    initStatChanges(focus);
+  }
 }
 
 function initStatChanges(focus) {
+    document.removeEventListener('keydown', handleChooseFocus);
   var scalar = Math.floor(Math.random() * 5 + 1);
   if (focus == 1) {
     $("#bed").fadeIn();
@@ -346,41 +383,9 @@ function initStatChanges(focus) {
   else if (year > 4) {
     winScreen();
   } else {
-    document.removeEventListener('keydown', handleChooseFocus);
     document.addEventListener('keydown', nextWeek);
   }
 }
-
-function updateHappiness() {
-  player.happiness = Math.floor(player.happiness + (((.6 * player.social) + (.4 * player.sleep) - 63) / 100) * player.happiness);
-  if (player.happiness > 100) {
-    player.happiness = 100;
-  }
-}
-
-function gameplay() {
-    hud();
-    options();
-}
-
-function winScreen() {
-    year = 4;
-    semester = 2;
-    week = 8;
-    var winText = "Congratulations! You graduated ";
-
-    if (playerNum == 1) {
-      winText = winText + "and became a famous body builder!";
-    }
-    else if (playerNum == 2) {
-      winText = winText + "and got a job and  now work 40 hours a week!";
-    }
-    else if (playerNum == 3) {
-      winText = winText + "and moved back in  with your parents!";
-    }
-    // console.log(winText);
-    endText(winText);
-  }
 
 function nextWeek(event) {
     if (event.keyCode == 32) {
@@ -412,9 +417,87 @@ function nextWeek(event) {
     }
 }
 
+function landmarkReached() {
+  var difficulty;
+  if (player.name == "Chad") {
+    difficulty = 65;
+  } else if (player.name == "EECS") {
+    difficulty = 80;
+  } else {
+    difficulty = 60;
+  }
+
+  var change = ((player.intelligence*0.9 + player.sleep*0.1 - difficulty)/100) + 0.03;
+    if(change > 0.15) {
+        var numSems = player.gradeSummary.semesters.push(4);
+        var sumGPA = player.gradeSummary.semesters.reduce(function(a, b) { return a + b; }, 0);
+        player.GPA = sumGPA / numSems;
+        player.GPA = Math.round((player.GPA + change)*100)/100;
+        if(player.GPA > 4) {
+          player.GPA = 4.00;
+        }
+        updateTextInBox("You did extremely well on your finals!" + " Your new GPA is: " + player.GPA);
+    } else if (change > 0.75) {
+        var numSems = player.gradeSummary.semesters.push(3.5 + minusRandomScalar()/10);
+        var sumGPA = player.gradeSummary.semesters.reduce(function(a, b) { return a + b; }, 0);
+        player.GPA = sumGPA / numSems;
+        player.GPA = Math.round((player.GPA + change)*100)/100;
+        updateTextInBox("You did well on your finals!" + " Your new GPA is: " + player.GPA);
+    } else if (change > 0) {
+        var numSems = player.gradeSummary.semesters.push(3.0 + minusRandomScalar()/10);
+        var sumGPA = player.gradeSummary.semesters.reduce(function(a, b) { return a + b; }, 0);
+        player.GPA = sumGPA / numSems;
+        player.GPA = Math.round((player.GPA + change)*100)/100;
+        updateTextInBox("You did okay on your finals." + " Your new GPA is: " + player.GPA);
+    } else if (change > -.1) {
+        var numSems = player.gradeSummary.semesters.push(2.0 + minusRandomScalar()/10);
+        var sumGPA = player.gradeSummary.semesters.reduce(function(a, b) { return a + b; }, 0);
+        player.GPA = sumGPA / numSems;
+        player.GPA = Math.round((player.GPA + change)*100)/100;
+        updateTextInBox("You did poorly on your finals." + " Your new GPA is: " + player.GPA);
+    } else {
+        var numSems = player.gradeSummary.semesters.push(1.5 + minusRandomScalar()/10);
+        var sumGPA = player.gradeSummary.semesters.reduce(function(a, b) { return a + b; }, 0);
+        player.GPA = sumGPA / numSems;
+        player.GPA = Math.round((player.GPA + change)*100)/100;
+        updateTextInBox("You completely failed your finals." + " Your new GPA is: " + player.GPA);
+
+    }
+    document.addEventListener('keydown', afterChallenge);
+}
+
+function minusRandomScalar() {
+  return Math.floor(Math.random() * 4);
+}
+
+function updateHappiness() {
+  player.happiness = Math.floor(player.happiness + (((.6 * player.social) + (.4 * player.sleep) - 63) / 100) * player.happiness);
+  if (player.happiness > 100) {
+    player.happiness = 100;
+  }
+}
+
+function winScreen() {
+    year = 4;
+    semester = 2;
+    week = 8;
+    var winText = "Congratulations! You graduated ";
+
+    if (playerNum == 1) {
+      winText = winText + "and became a famous body builder!";
+    }
+    else if (playerNum == 2) {
+      winText = winText + "and got a job and  now work 40 hours a week!";
+    }
+    else if (playerNum == 3) {
+      winText = winText + "and moved back in  with your parents!";
+    }
+    // console.log(winText);
+    endText(winText);
+  }
+
 function randomEvent() {
     hud();
-    console.log("event triggered");
     var random = Math.random();
 
     if (random > 0.9) {
@@ -450,7 +533,6 @@ function randomEvent() {
 
 function challenge() {
     hud();
-    document.removeEventListener('keydown', nextWeek);
     let prompt;
     let choice1;
     let choice2;
@@ -577,42 +659,6 @@ function finishedGame() {
   endText("Congratulations! You graduated Berkeley! Go Bears!")
 }
 
-function options() {
-    const option = new createjs.Text("Choose your focus for the week:", "25px VT323", white);
-    option.x = 50;
-    option.y = 388 + 45;
-
-    const study = new createjs.Text("(1) Sleep", "25px VT323", white);
-    study.x = 50;
-    study.y = 388 + 75;
-
-    const sleep = new createjs.Text("(2) Study", "25px VT323", white);
-    sleep.x = 50;
-    sleep.y = 388 + 105;
-
-    const party = new createjs.Text("(3) Party", "25px VT323", white);
-    party.x = 50;
-    party.y = 388 + 135;
-
-    stage.addChild(option, study, sleep, party);
-    document.addEventListener('keydown', handleChooseFocus);
-}
-
-function handleChooseFocus(event) {
-    var focus = 0;
-    if (event.keyCode == 49) {
-        focus = 1;
-    } else if (event.keyCode == 50) {
-        focus = 2;
-    } else if (event.keyCode == 51) {
-        focus = 3;
-    }
-
-  if(focus != 0) {
-    initStatChanges(focus);
-  }
-}
-
 function lostPage() {
   //  "You won't be able to feed a family with your GPA"
   // "You develop depression. You should've gone to UCLA"
@@ -637,77 +683,6 @@ function restartGame(event) {
   } else if (event.keyCode == 32) {
     return;
   }
-}
-
-function hud(){
-    stage.removeAllChildren();
-
-    var rec1 = new createjs.Shape();
-    rec1.graphics.setStrokeStyle(8, "round");
-    rec1.graphics.beginStroke(white).beginFill(black).drawRect(30, 370, 710, 200);
-
-    var rec2 = new createjs.Shape();
-    rec2.graphics.setStrokeStyle(8, "round");
-    rec2.graphics.beginStroke(white).beginFill(black).drawRect(770, 22, 200, 318);
-
-    var rec3 = new createjs.Shape();
-    rec3.graphics.setStrokeStyle(8, "round");
-    rec3.graphics.beginStroke(white).beginFill(black).drawRect(770, 370, 200, 200);
-
-    var date = new createjs.Text('Year ' + year + ', Semester ' + semester + ': Week ' + week, '40px VT323', white);
-    date.x = 385 - date.getMeasuredWidth()/2;
-    date.y = 388;
-
-    var nametext = new createjs.Text(player.name, '30px VT323', white);
-    nametext.x = 870 - nametext.getMeasuredWidth()/2;
-    nametext.y = 190 + nametext.getMeasuredHeight();
-
-    var gpatext = new createjs.Text('GPA: ' + player.GPA, '30px VT323', white);
-    gpatext.x = 870 - gpatext.getMeasuredWidth()/2;
-    gpatext.y = 230 + gpatext.getMeasuredHeight();
-
-    var haptext = new createjs.Text('Happiness: ' + player.happiness + '%', '30px VT323', white);
-    haptext.x = 870 - haptext.getMeasuredWidth()/2;
-    haptext.y = 270 + haptext.getMeasuredHeight();
-
-    var atrtext = new createjs.Text('Attributes', '30px VT323', white);
-    atrtext.x = 870 - atrtext.getMeasuredWidth()/2;
-    atrtext.y = 390 + atrtext.getMeasuredHeight();
-
-
-    var inttext = new createjs.Text('Intelligence: ' + player.intelligence, '25px VT323', white);
-    inttext.x = 870 - inttext.getMeasuredWidth()/2;
-    inttext.y = 440 + inttext.getMeasuredHeight();
-
-    var soctext = new createjs.Text('Social: ' + player.social, '25px VT323', white);
-    soctext.x = 870 - soctext.getMeasuredWidth()/2;
-    soctext.y = 470 + soctext.getMeasuredHeight();
-
-    var sletext = new createjs.Text('Sleep: ' + player.sleep, '25px VT323', white);
-    sletext.x = 870 - sletext.getMeasuredWidth()/2;
-    sletext.y = 500 + sletext.getMeasuredHeight();
-
-    var path;
-
-    if (player.happiness > 70){
-      path = "img/"+playerNum+"hap.png";
-    }
-    else if (player.happiness > 40){
-      path = "img/"+playerNum+"meh.png";
-    }
-    else {
-      path = "img/"+playerNum+"sad.png";
-    }
-
-    var cha = new createjs.Bitmap(path);
-    cha.x = 870 - 144/2;
-    cha.y = 50;
-    cha.scale = .5;
-
-    stage.addChild(rec1, rec2, rec3);
-    stage.addChild(date);
-    stage.addChild(gpatext, haptext, atrtext, inttext, soctext, sletext, nametext);
-    stage.addChild(cha);
 }
 
 function updateTextInBox(stringToShow) {
