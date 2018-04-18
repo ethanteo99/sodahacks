@@ -64,7 +64,7 @@ function createMenu() {
 
     var rec2 = new createjs.Shape();
     rec2.graphics.setStrokeStyle(0, "round");
-    rec2.graphics.beginStroke("rgba(0,50,98,.8)").beginFill("rgba(0,50,98,.8)").drawRect(145, 375, 710, 150);
+    rec2.graphics.beginStroke("rgba(0,50,98,.8)").beginFill("rgba(0,50,98,.8)").drawRect(145, 375, 710, 130);
 
     var show = "Welcome to Berkeley! Two rules: GPA greater than 2.0 and avoid depression!"
 
@@ -76,7 +76,15 @@ function createMenu() {
     text2.x = canvas.width / 2 - text2.getMeasuredWidth() / 2;
     text2.y = (canvas.height / 15) * 11;
 
-    menu.addChild(back, rec1, welcome, start, rec2, text1, text2);
+    var rec3 = new createjs.Shape();
+    rec2.graphics.setStrokeStyle(0, "round");
+    rec2.graphics.beginStroke("rgba(0,50,98,.8)").beginFill("rgba(0,50,98,.8)").drawRect(145, 575, 710, 100);
+
+    var createdBy = new createjs.Text("Created by Ethan Teo, Danlin Lillemark, Haoran Guo, and Julian Kung", '20px VT323', white);
+    createdBy.x = canvas.width / 2 - 260;
+    createdBy.y = (canvas.height / 15) * 14 + 20;
+
+    menu.addChild(back, rec1, welcome, start, rec2, text1, text2, rec3, createdBy);
     stage.addChild(menu);
 }
 
